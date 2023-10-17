@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MyMusicActivity extends AppCompatActivity {
-    ListView listV;
+    ListView listV; // listView
     ArrayList<File> listMusic;
 
     ArrayList<String> path;
