@@ -6,10 +6,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.IntentService;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +22,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class MyMusicActivity extends AppCompatActivity {
@@ -28,8 +32,15 @@ public class MyMusicActivity extends AppCompatActivity {
     ArrayList<String> path;
     ArrayList<String> audioAlbum;
     ArrayList<String> audioArtist;
+    ArrayList<String> audioTitle;
 
     public MediaPlayer mediaPlayer;
+
+    Music myMusic;
+
+    ArrayList<Music> musicArrayList;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +52,8 @@ public class MyMusicActivity extends AppCompatActivity {
         path = new ArrayList<String>();
         audioAlbum = new ArrayList<String>();
         audioArtist = new ArrayList<String>();
+        audioTitle = new ArrayList<String>();
+        musicArrayList = new ArrayList<Music>();
 
 
 
@@ -52,18 +65,12 @@ public class MyMusicActivity extends AppCompatActivity {
         listV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(), path.get(i), Toast.LENGTH_SHORT).show();
 
-                try {
-                    if(mediaPlayer != null) {
-                        mediaPlayer.reset();
-                    }
-                    mediaPlayer.setDataSource(path.get(i));
-                    mediaPlayer.prepare();
-                    mediaPlayer.start();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                myMusic = new Music(audioTitle.get(i), audioArtist.get(i), audioAlbum.get(i), path.get(i), i);
+                Intent intent = new Intent(getApplicationContext(), LecteurActivity.class);
+                intent.putExtra("MUSIC", myMusic);
+                intent.putParcelableArrayListExtra("MUSIC_ARRAY", musicArrayList);
+                startActivity(intent);
 
             }
         });
@@ -80,10 +87,9 @@ public class MyMusicActivity extends AppCompatActivity {
     public  void runtimePermission() {
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(MyMusicActivity.this, "Permission allowed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyMusicActivity.this, "Permission accordée", Toast.LENGTH_SHORT).show();
 
         } else {
-            Toast.makeText(MyMusicActivity.this, "Permission not allowed", Toast.LENGTH_SHORT).show();
             ActivityCompat.requestPermissions(MyMusicActivity.this, new String[]
                     { Manifest.permission.READ_MEDIA_AUDIO }, 1);
         }
@@ -97,12 +103,10 @@ public class MyMusicActivity extends AppCompatActivity {
                 afficheMusic();
             }
             else {
-                Toast.makeText(this, "Pas de permission", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Permission non accordée", Toast.LENGTH_SHORT).show();
             }
 
         }
-
-
     }
 
 
@@ -117,8 +121,10 @@ public class MyMusicActivity extends AppCompatActivity {
                           MediaStore.Audio.Media.DISPLAY_NAME,
                           MediaStore.Audio.Media.DATA,
                           MediaStore.Audio.Media.ALBUM,
-                          MediaStore.Audio.Media.ARTIST };
+                          MediaStore.Audio.Media.ARTIST,
+                          MediaStore.Audio.Media.TITLE };
 
+        int i = 0;
         // recuperation du fichier
         Cursor audioCursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj, null, null, null);
         if(audioCursor != null){
@@ -128,8 +134,23 @@ public class MyMusicActivity extends AppCompatActivity {
                     path.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)));
                     audioAlbum.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)));
                     audioArtist.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)));
-                    audioList.add(audioCursor.getString(audioIndex));
-                }while(audioCursor.moveToNext());
+                    audioTitle.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)));
+                    audioList.add(audioCursor.getString(audioIndex)
+                            .replace(".mp3", "")
+                            .replace(".wma", "")
+                            .replace("MP3", ""));
+
+
+                    musicArrayList.add(new Music(audioTitle.get(i),
+                            audioArtist.get(i),
+                            audioAlbum.get(i),
+                            path.get(i),
+                            i));
+                    ++i;
+
+//                    musicArrayList.add(new Music("titre", "album", "artiste", "path", 1));
+
+                } while(audioCursor.moveToNext());
             }
         }
         audioCursor.close();

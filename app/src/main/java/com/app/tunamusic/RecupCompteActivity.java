@@ -14,6 +14,7 @@ public class RecupCompteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recup_compte);
 
 
+        // recuperation du compte a implementer
         ImageView retour = findViewById(R.id.bt_retour3);
         retour.setOnClickListener(new View.OnClickListener() {
             @Override

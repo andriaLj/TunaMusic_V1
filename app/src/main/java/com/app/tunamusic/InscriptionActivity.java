@@ -14,6 +14,7 @@ public class InscriptionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inscription);
 
 
+        // inscription a implementer
         ImageView retour = findViewById(R.id.bt_retour5);
         retour.setOnClickListener(new View.OnClickListener() {
             @Override

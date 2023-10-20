@@ -15,8 +15,9 @@ public class Page2Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_page2);
 
-        Button connexion = findViewById(R.id.bt_connexion);
 
+        // passage dans l'activity connexion
+        Button connexion = findViewById(R.id.bt_connexion);
         connexion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -26,6 +27,8 @@ public class Page2Activity extends AppCompatActivity {
         });
 
 
+
+        // passage dans l'activity inscription
         Button inscrire = findViewById(R.id.bt_inscrire);
         inscrire.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,6 +38,7 @@ public class Page2Activity extends AppCompatActivity {
             }
         });
 
+        // quitte l'application
         ImageView retour = findViewById(R.id.bt_retour);
         retour.setOnClickListener(new View.OnClickListener() {
             @Override

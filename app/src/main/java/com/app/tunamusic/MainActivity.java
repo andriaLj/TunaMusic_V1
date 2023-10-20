@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Animation du logo et le nom pendant 2s
+        // Animation du logo et le nom pendant 2.5s
         ImageView logo = findViewById(R.id.logo);
         logo.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in));
 

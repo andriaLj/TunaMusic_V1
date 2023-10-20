@@ -16,6 +16,9 @@ public class ConnexionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connexion);
 
+
+
+        // connexion si info correct !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! compte user a implementer
         Button btConncter = findViewById(R.id.bt_connecter);
         btConncter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -25,6 +28,8 @@ public class ConnexionActivity extends AppCompatActivity {
             }
         });
 
+
+        // recuperation du mdp
         TextView mdpOublie = findViewById(R.id.mdp_oublie);
         mdpOublie.setOnClickListener(new View.OnClickListener() {
             @Override
