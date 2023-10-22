@@ -2,6 +2,7 @@ package com.app.tunamusic;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -9,9 +10,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -26,6 +29,7 @@ import java.util.regex.Pattern;
 public class MyMusicActivity extends AppCompatActivity {
     ListView listV; // listView
     SearchView searchView;
+    CardView cardView;
     ArrayAdapter<String> adapter;
     ArrayList<File> listMusic;
 
@@ -51,6 +55,8 @@ public class MyMusicActivity extends AppCompatActivity {
         audioArtist = new ArrayList<String>();
         audioTitle = new ArrayList<String>();
         musicArrayList = new ArrayList<Music>();
+
+        cardView = findViewById(R.id.cardView);
 
 
         // Lit une musique selectionnee dans la listView
@@ -78,9 +84,29 @@ public class MyMusicActivity extends AppCompatActivity {
                     }
                 }
             }
-
-
         });
+
+       listV.setOnScrollListener(new AbsListView.OnScrollListener() {
+           @Override
+           public void onScrollStateChanged(AbsListView absListView, int i) {
+//               Toast.makeText(getApplicationContext(), "" + absListView., Toast.LENGTH_SHORT).show();
+               int firstVisiblePosition = listV.getFirstVisiblePosition();
+
+               // Accédez à la vue du premier élément visible
+               View firstVisibleView = listV.getChildAt(0);
+               if (firstVisiblePosition == 0 && firstVisibleView != null && firstVisibleView.getTop() == 0) {
+                   cardView.setVisibility(View.VISIBLE); // La liste est defilee vers le haut
+               } else {
+                   cardView.setVisibility(View.GONE); // La liste est défilée vers le bas
+               }
+
+           }
+
+           @Override
+           public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+
+           }
+       });
 
 
         searchView = findViewById(R.id.searchView);
@@ -184,6 +210,5 @@ public class MyMusicActivity extends AppCompatActivity {
         // ajout des musiques sur un ListView
         /*ArrayAdapter<String>*/ adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, audioList);
         listV.setAdapter(adapter);
-
     }
 }
