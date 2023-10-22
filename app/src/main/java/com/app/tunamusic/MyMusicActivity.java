@@ -6,41 +6,38 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.app.IntentService;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MyMusicActivity extends AppCompatActivity {
     ListView listV; // listView
+    SearchView searchView;
+    ArrayAdapter<String> adapter;
     ArrayList<File> listMusic;
 
     ArrayList<String> path;
     ArrayList<String> audioAlbum;
     ArrayList<String> audioArtist;
     ArrayList<String> audioTitle;
-
-    public MediaPlayer mediaPlayer;
+    ArrayList<String> id = new ArrayList<String>();
 
     Music myMusic;
 
     ArrayList<Music> musicArrayList;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,29 +53,53 @@ public class MyMusicActivity extends AppCompatActivity {
         musicArrayList = new ArrayList<Music>();
 
 
-
-        mediaPlayer = new MediaPlayer();
-
-
         // Lit une musique selectionnee dans la listView
         listV = findViewById(R.id.listViewSong);
         listV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            boolean isTitle = true;
+            boolean isArtist = true;
+            boolean isAlbum = true;
+
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                for (int j = 0; j < musicArrayList.size(); ++j) {
+                    isTitle = listV.getItemAtPosition(i).toString().contains(musicArrayList.get(j).getTitle());
+                    isArtist = listV.getItemAtPosition(i).toString().contains(musicArrayList.get(j).getArtist());
+                    isAlbum = listV.getItemAtPosition(i).toString().contains(musicArrayList.get(j).getAlbum());
 
-                myMusic = new Music(audioTitle.get(i), audioArtist.get(i), audioAlbum.get(i), path.get(i), i);
-                Intent intent = new Intent(getApplicationContext(), LecteurActivity.class);
-                intent.putExtra("MUSIC", myMusic);
-                intent.putParcelableArrayListExtra("MUSIC_ARRAY", musicArrayList);
-                startActivity(intent);
+                    if (isTitle && isArtist && isAlbum) {
+                        myMusic = new Music(audioTitle.get(j), audioArtist.get(j), audioAlbum.get(j), path.get(j), j);
 
+                        Intent intent = new Intent(getApplicationContext(), LecteurActivity.class);
+                        intent.putExtra("MUSIC", myMusic);
+                        intent.putParcelableArrayListExtra("MUSIC_ARRAY", musicArrayList);
+                        startActivity(intent);
+                        break;
+                    }
+                }
             }
+
+
         });
 
+
+        searchView = findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                adapter.getFilter().filter(s);
+                return false;
+            }
+        });
         runtimePermission();
-
-
     }
+
+
 
 
     /*
@@ -131,14 +152,21 @@ public class MyMusicActivity extends AppCompatActivity {
             if(audioCursor.moveToFirst()){
                 do{
                     int audioIndex = audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME);
+
+
+                    id.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)));
                     path.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)));
                     audioAlbum.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)));
                     audioArtist.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)));
                     audioTitle.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)));
-                    audioList.add(audioCursor.getString(audioIndex)
-                            .replace(".mp3", "")
-                            .replace(".wma", "")
-                            .replace("MP3", ""));
+
+                    // prend uniquement le titre + l'artiste + album sur l'affichage de la listView
+                    String item = audioTitle.get(i) + " - " + audioArtist.get(i) + " - " +audioAlbum.get(i);
+                    audioList.add(item);
+//                    audioList.add(audioCursor.getString(audioIndex)
+//                            .replace(".mp3", "")
+//                            .replace(".wma", "")
+//                            .replace("MP3", ""));
 
 
                     musicArrayList.add(new Music(audioTitle.get(i),
@@ -148,17 +176,14 @@ public class MyMusicActivity extends AppCompatActivity {
                             i));
                     ++i;
 
-//                    musicArrayList.add(new Music("titre", "album", "artiste", "path", 1));
-
                 } while(audioCursor.moveToNext());
             }
         }
         audioCursor.close();
 
         // ajout des musiques sur un ListView
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, audioList);
+        /*ArrayAdapter<String>*/ adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, audioList);
         listV.setAdapter(adapter);
-
 
     }
 }

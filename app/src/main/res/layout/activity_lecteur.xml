@@ -124,7 +124,7 @@
                                 android:layout_weight="1"
                                 android:clickable="false"
                                 android:contentDescription="btPlay"
-                                android:focusableInTouchMode="true"
+                                android:focusableInTouchMode="false"
                                 android:src="@drawable/baseline_pause_circle_filled_24" />
 
                             <ImageView
@@ -135,11 +135,25 @@
                                 android:layout_marginTop="20dp"
                                 android:layout_marginBottom="30dp"
                                 android:layout_weight="1"
+                                android:clickable="true"
                                 android:src="@drawable/next_button" />
+
 
                         </LinearLayout>
 
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/minSectxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginBottom="120dp"
+                        android:text="0:00"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>

@@ -27,9 +27,14 @@ public class MyService extends Service {
 
 
 
+    public boolean isPlayingMusic() {
+        return mediaPlayer.isPlaying();
+    }
+
     public void setCursorPosition(int seek) {
         mediaPlayer.seekTo(seek);
     }
+
     public int getMusicCursor() {
         return mediaPlayer.getCurrentPosition();
     }
@@ -37,13 +42,13 @@ public class MyService extends Service {
     public int getMusicDuration() {
         return mediaPlayer.getDuration();
     }
+
     // lance la lecture de la musique
     public void playMusic() {
         if(mediaPlayer != null && !mediaPlayer.isPlaying()) {
             mediaPlayer.start();
         }
     }
-
 
     // met la musique en pause
     public void pauseMusic() {
@@ -54,14 +59,17 @@ public class MyService extends Service {
 
     public void setPath(String path) {
         if(mediaPlayer != null) {
-            mediaPlayer.reset(); // reinitialise mediaplayer
+            mediaPlayer.stop();
+            mediaPlayer.release(); // reinitialise mediaplayer
         }
         try {
+            mediaPlayer = new MediaPlayer();
             mediaPlayer.setDataSource(path); // initialisation du chemin dans mediaplayer
             mediaPlayer.prepare();
             mediaPlayer.start(); // lance la musique
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Lecture impossible", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -93,14 +101,17 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         path = intent.getStringExtra("MusicPath"); // initialise le chemin d'acces
         if(mediaPlayer != null) {
-            mediaPlayer.reset(); // reinitialise mediaplayer
+            mediaPlayer.stop();
+            mediaPlayer.release(); // reinitialise mediaplayer
         }
         try {
+            mediaPlayer = new MediaPlayer();
             mediaPlayer.setDataSource(path); // initialisation du chemin dans mediaplayer
             mediaPlayer.prepare();
             mediaPlayer.start(); // lance la musique
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Lecture impossible", Toast.LENGTH_SHORT).show();
         }
 
         return super.onStartCommand(intent, flags, startId);
