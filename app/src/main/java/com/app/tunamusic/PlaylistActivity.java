@@ -23,7 +23,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class PlaylistActivity extends AppCompatActivity {
-    private boolean isPlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +34,9 @@ public class PlaylistActivity extends AppCompatActivity {
         btPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!mediaPlayer.isPlaying()) {
+                if (!mediaPlayer.isPlaying()) {
                     mediaPlayer.start();
                 }
-
             }
         });
 
@@ -46,7 +44,7 @@ public class PlaylistActivity extends AppCompatActivity {
         btPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mediaPlayer.isPlaying()) {
+                if (mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
                 }
             }
@@ -71,11 +69,10 @@ public class PlaylistActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Intent intent;
-                if(item.getItemId() == R.id.accueil) {
+                if (item.getItemId() == R.id.accueil) {
                     intent = new Intent(getApplicationContext(), AccueilActivity.class);
                     startActivity(intent);
                 }
-
                 return false;
             }
         });
@@ -85,12 +82,11 @@ public class PlaylistActivity extends AppCompatActivity {
     // Appui sur bouton retour
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
 }

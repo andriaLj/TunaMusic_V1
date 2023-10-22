@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Animation du logo et le nom pendant 2.5s
         ImageView logo = findViewById(R.id.logo);
-        logo.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in));
+        logo.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in));
 
         TextView title = findViewById(R.id.appTitle);
         title.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in));
@@ -37,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), AccueilActivity.class);
                 startActivity(intent);
             }
-        },2500);
-
+        }, 2500);
 
 
     }

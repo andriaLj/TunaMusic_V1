@@ -26,7 +26,6 @@ public class MyService extends Service {
     private final IBinder binder = new LocalBinder(); // relie la liaison avec une activity
 
 
-
     public boolean isPlayingMusic() {
         return mediaPlayer.isPlaying();
     }
@@ -45,20 +44,16 @@ public class MyService extends Service {
 
     // lance la lecture de la musique
     public void playMusic() {
-        if(mediaPlayer != null && !mediaPlayer.isPlaying()) {
-            mediaPlayer.start();
-        }
+        if (mediaPlayer != null && !mediaPlayer.isPlaying()) mediaPlayer.start();
     }
 
     // met la musique en pause
     public void pauseMusic() {
-        if(mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
-        }
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) mediaPlayer.pause();
     }
 
     public void setPath(String path) {
-        if(mediaPlayer != null) {
+        if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release(); // reinitialise mediaplayer
         }
@@ -73,6 +68,9 @@ public class MyService extends Service {
         }
     }
 
+    private void workBackground() {
+
+    }
 
 
     // gestion de liaison du service avec d'autre activity
@@ -81,7 +79,6 @@ public class MyService extends Service {
     public IBinder onBind(Intent intent) {
         return binder;
     }
-
 
     public class LocalBinder extends Binder {
         MyService getService() {
@@ -92,15 +89,13 @@ public class MyService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
         mediaPlayer = new MediaPlayer();
-
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         path = intent.getStringExtra("MusicPath"); // initialise le chemin d'acces
-        if(mediaPlayer != null) {
+        if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release(); // reinitialise mediaplayer
         }
@@ -113,14 +108,14 @@ public class MyService extends Service {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Lecture impossible", Toast.LENGTH_SHORT).show();
         }
-
-        return super.onStartCommand(intent, flags, startId);
+//        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY; // Pour que le service soit redémarré automatiquement s'il est tué par le système
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mediaPlayer != null && mediaPlayer.isPlaying()) {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop(); // arrete la musique
             mediaPlayer.release(); // tue l'instance de l'objet
         }

@@ -70,11 +70,11 @@ public class Music implements Parcelable {
     }
 
 
-
     // SETTERS
     public void setIndex(int index) {
         this.index = index;
     }
+
     public void setTitle(String title) {
         this.title = title;
     }

@@ -52,7 +52,7 @@ public class LecteurActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecteur);
 
-        seekBar= findViewById(R.id.seekBar);
+        seekBar = findViewById(R.id.seekBar);
 
         infoMusic = findViewById(R.id.txt_info);
         minSec = findViewById(R.id.minSectxt);
@@ -76,13 +76,12 @@ public class LecteurActivity extends AppCompatActivity {
         btPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isBound && mservice != null) {
+                if (isBound && mservice != null) {
                     if (seekBar.getProgress() > 2550) {
                         mservice.setCursorPosition(0);
-                    }
-                    else {
+                    } else {
                         // evite tout depassement
-                        if(music.getIndex() > 0) {
+                        if (music.getIndex() > 0) {
                             mservice.setPath(musicArrayList.get(music.getIndex() - 1).getPath());
                             music = musicArrayList.get(music.getIndex() - 1);
                             infoMusic.setText(music.getTitle() + " - " + music.getArtist());
@@ -104,9 +103,9 @@ public class LecteurActivity extends AppCompatActivity {
         btNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isBound && mservice != null) {
+                if (isBound && mservice != null) {
                     // evite tout depassement
-                    if(music.getIndex() == musicArrayList.size() - 1) {
+                    if (music.getIndex() == musicArrayList.size() - 1) {
                         mservice.setPath(musicArrayList.get(0).getPath());
                         music = musicArrayList.get(0);
                         infoMusic.setText(music.getTitle() + " - " + music.getArtist());
@@ -125,7 +124,7 @@ public class LecteurActivity extends AppCompatActivity {
         });
 
 
-
+        // Connexion au service
         final ServiceConnection connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName className, IBinder service) {
@@ -168,44 +167,43 @@ public class LecteurActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                            if (isBound && mservice != null) {
-                                seekBar.setMax(mservice.getMusicDuration());
-                                seekBar.setProgress(mservice.getMusicCursor());
-                                // passage a la musique suivante si on arrive a la fin
-                                if (mservice.getMusicCursor() + 500 >= mservice.getMusicDuration()) {
-                                    // identique au bouton next
-                                    if(music.getIndex() == musicArrayList.size() - 1) {
-                                        mservice.setPath(musicArrayList.get(0).getPath());
-                                        music = musicArrayList.get(0);
-                                        infoMusic.setText(music.getTitle() + " - " + music.getArtist());
-                                    } else {
-                                        mservice.setPath(musicArrayList.get(music.getIndex() + 1).getPath());
-                                        music = musicArrayList.get(music.getIndex() + 1);
-                                        infoMusic.setText(music.getTitle() + " - " + music.getArtist());
-                                    }
+                        if (isBound && mservice != null) {
+                            seekBar.setMax(mservice.getMusicDuration());
+                            seekBar.setProgress(mservice.getMusicCursor());
+                            // passage a la musique suivante si on arrive a la fin
+                            if (mservice.getMusicCursor() + 500 >= mservice.getMusicDuration()) {
+                                // identique au bouton next
+                                if (music.getIndex() == musicArrayList.size() - 1) {
+                                    mservice.setPath(musicArrayList.get(0).getPath());
+                                    music = musicArrayList.get(0);
+                                    infoMusic.setText(music.getTitle() + " - " + music.getArtist());
+                                } else {
+                                    mservice.setPath(musicArrayList.get(music.getIndex() + 1).getPath());
+                                    music = musicArrayList.get(music.getIndex() + 1);
+                                    infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                                 }
-                                // ecoute changement d'etat de la bar de progression
-                                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                                    @Override
-                                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                                        String temps = millisecondToMinuteSeconde(/*mservice.getMusicCursor()*/ seekBar.getProgress());
-                                        minSec.setText(temps);
-                                    }
-
-                                    @Override
-                                    public void onStartTrackingTouch(SeekBar seekBar) {
-
-                                    }
-
-                                    @Override
-                                    public void onStopTrackingTouch(SeekBar seekBar) {
-                                        mservice.setCursorPosition(seekBar.getProgress());  // avancer ou reculer la musique
-                                    }
-                                });
                             }
+                            // ecoute changement d'etat de la bar de progression
+                            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                @Override
+                                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                                    String temps = millisecondToMinuteSeconde(/*mservice.getMusicCursor()*/ seekBar.getProgress());
+                                    minSec.setText(temps);
+                                }
+
+                                @Override
+                                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                                }
+
+                                @Override
+                                public void onStopTrackingTouch(SeekBar seekBar) {
+                                    mservice.setCursorPosition(seekBar.getProgress());  // avancer ou reculer la musique
+                                }
+                            });
+                        }
                     }
                 });
-
             }
 
         }, 2500, 1000);
@@ -217,9 +215,7 @@ public class LecteurActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
 
             }
-
         };
-
     }
 
     // conversion Milliseconde a minute:seconde
