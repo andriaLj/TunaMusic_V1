@@ -91,8 +91,10 @@ public class LecteurActivity extends AppCompatActivity {
                             infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                         }
                     }
-                    if (mservice.isPlayingMusic())
+                    if (mservice.isPlayingMusic()) {
+                        isPlaying = true;
                         btPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.baseline_pause_circle_filled_24));
+                    }
                     else
                         btPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_play));
                 }
@@ -114,9 +116,10 @@ public class LecteurActivity extends AppCompatActivity {
                         music = musicArrayList.get(music.getIndex() + 1);
                         infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                     }
-                    if (mservice.isPlayingMusic())
+                    if (mservice.isPlayingMusic()) {
+                        isPlaying = true;
                         btPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.baseline_pause_circle_filled_24));
-                    else
+                    } else
                         btPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_play));
                 }
 
