@@ -4,31 +4,24 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.app.tunamusic.MyService;
 import com.google.android.material.appbar.MaterialToolbar;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.Cursor;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -59,7 +52,7 @@ public class LecteurActivity extends AppCompatActivity {
         infoMusic = findViewById(R.id.txt_info);
         minSec = findViewById(R.id.minSectxt);
 
-        btPlay = findViewById(R.id.btPlay);
+        btPlay = findViewById(R.id.lecteurPlayPause);
         btPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,7 +146,10 @@ public class LecteurActivity extends AppCompatActivity {
         infoMusic.setText(infoToPrint);
 
         Intent intentService = new Intent(getApplicationContext(), MyService.class);
+        intentService.putExtra("MUSIC_TITLE", music.getTitle() + " " + music.getArtist());
         intentService.putExtra("MusicPath", music.getPath());
+        intentService.putParcelableArrayListExtra("LIST_MUSIC", musicArrayList);
+        intentService.putExtra("MUSIC_INDEX", music.getIndex());
         startService(intentService);
         bindService(intentService, connection, BIND_AUTO_CREATE);
 
@@ -221,6 +217,9 @@ public class LecteurActivity extends AppCompatActivity {
 
             }
         };
+
+
+
     }
 
     // conversion Milliseconde a minute:seconde
@@ -242,4 +241,8 @@ public class LecteurActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }

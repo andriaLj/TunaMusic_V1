@@ -22,6 +22,8 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class AccueilActivity extends AppCompatActivity {
 
@@ -52,56 +54,29 @@ public class AccueilActivity extends AppCompatActivity {
             }
         });
 
-        registerForContextMenu(cardPlaylist1);
-        // Option sur les cardView
+        registerForContextMenu(cardPlaylist1); // Option sur les cardView
 
-
-/*        MaterialToolbar toolbar = findViewById(R.id.materialToolbar);
-        ScrollView scrollView = findViewById(R.id.srcreenScroll);
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+        BottomNavigationView bottomNavi = findViewById(R.id.bottomNavigationView2);
+        bottomNavi.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
-            public void onScrollChanged() {
-                int scrollY = scrollView.getScrollY();
-                int offset = 10;
-                if((lastScrollPos + offset) > scrollY) {
-                    toolbar.setVisibility(View.VISIBLE);
-                    lastScrollPos = scrollY;
-                } else {
-                    toolbar.setVisibility(View.GONE);
-                    lastScrollPos = scrollY;
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent;
+                if (item.getItemId() == R.id.accueil) {
+                    intent = new Intent(getApplicationContext(), AccueilActivity.class);
+                    startActivity(intent);
+                } else if (item.getItemId() == R.id.recherche) {
+                    intent = new Intent(getApplicationContext(), MyMusicActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
+
+                } else if (item.getItemId() == R.id.menu) {
+//                    intent = new Intent(getApplicationContext(), PlaylistActivity.class);
+//                    startActivity(intent);
                 }
+
+                return false;
             }
         });
-*/
-
-
-
-   /*     final MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.riche);
-
-        Button btPlay = findViewById(R.i.playMusic);
-        btPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!isPlaying) {
-                    mediaPlayer.start();
-                }
-                isPlaying = true;
-            }
-        });
-
-        Button btPause = findViewById(R.id.pauseMusic);
-        btPause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(isPlaying) {
-                    mediaPlayer.pause();
-                }
-                isPlaying = false;
-            }
-        });
-
-*/
-
     }
 
     @Override
@@ -121,4 +96,8 @@ public class AccueilActivity extends AppCompatActivity {
         Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
         return super.onContextItemSelected(item);
     }
+
+
+
+
 }

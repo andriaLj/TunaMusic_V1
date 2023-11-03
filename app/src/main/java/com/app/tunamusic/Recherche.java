@@ -1,18 +1,21 @@
 package com.app.tunamusic;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
+import android.R.layout;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,7 +26,9 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
-public class MyMusicActivity extends AppCompatActivity {
+
+public class Recherche extends Fragment {
+
     ListView listV; // listView
     SearchView searchView;
     CardView cardView;
@@ -40,10 +45,13 @@ public class MyMusicActivity extends AppCompatActivity {
 
     ArrayList<Music> musicArrayList;
 
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_music);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_recherche, container, false);
 
 
         listMusic = new ArrayList<File>();
@@ -53,11 +61,10 @@ public class MyMusicActivity extends AppCompatActivity {
         audioTitle = new ArrayList<String>();
         musicArrayList = new ArrayList<Music>();
 
-        cardView = findViewById(R.id.cardView);
-
+        cardView = view.findViewById(R.id.cardView);
 
         // Lit une musique selectionnee dans la listView
-        listV = findViewById(R.id.listViewSong);
+        listV = view.findViewById(R.id.listViewSong);
         listV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             boolean isTitle = true;
             boolean isArtist = true;
@@ -73,7 +80,7 @@ public class MyMusicActivity extends AppCompatActivity {
                     if (isTitle && isArtist && isAlbum) {
                         myMusic = new Music(audioTitle.get(j), audioArtist.get(j), audioAlbum.get(j), path.get(j), j);
 
-                        Intent intent = new Intent(getApplicationContext(), LecteurActivity.class);
+                        Intent intent = new Intent(getContext(), LecteurActivity.class);
                         intent.putExtra("MUSIC", myMusic);
                         intent.putParcelableArrayListExtra("MUSIC_ARRAY", musicArrayList);
                         startActivity(intent);
@@ -83,30 +90,30 @@ public class MyMusicActivity extends AppCompatActivity {
             }
         });
 
-       listV.setOnScrollListener(new AbsListView.OnScrollListener() {
-           @Override
-           public void onScrollStateChanged(AbsListView absListView, int i) {
+        listV.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
 //               Toast.makeText(getApplicationContext(), "" + absListView., Toast.LENGTH_SHORT).show();
-               int firstVisiblePosition = listV.getFirstVisiblePosition();
+                int firstVisiblePosition = listV.getFirstVisiblePosition();
 
-               // Accédez à la vue du premier élément visible
-               View firstVisibleView = listV.getChildAt(0);
-               if (firstVisiblePosition == 0 && firstVisibleView != null && firstVisibleView.getTop() == 0) {
-                   cardView.setVisibility(View.VISIBLE); // La liste est defilee vers le haut
-               } else {
-                   cardView.setVisibility(View.GONE); // La liste est défilée vers le bas
-               }
+                // Accédez à la vue du premier élément visible
+                View firstVisibleView = listV.getChildAt(0);
+                if (firstVisiblePosition == 0 && firstVisibleView != null && firstVisibleView.getTop() == 0) {
+                    cardView.setVisibility(View.VISIBLE); // La liste est defilee vers le haut
+                } else {
+                    cardView.setVisibility(View.GONE); // La liste est défilée vers le bas
+                }
 
-           }
+            }
 
-           @Override
-           public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
 
-           }
-       });
+            }
+        });
 
 
-        searchView = findViewById(R.id.searchView);
+        searchView = view.findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -120,21 +127,24 @@ public class MyMusicActivity extends AppCompatActivity {
             }
         });
         runtimePermission();
+
+
+
+
+
+        return view;
     }
 
-
-
-
     /*
-        Recuperation des permissions
-     */
+       Recuperation des permissions
+    */
     public  void runtimePermission() {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) ==
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(MyMusicActivity.this, "Permission accordée", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Permission accordée", Toast.LENGTH_SHORT).show();
 
         } else {
-            ActivityCompat.requestPermissions(MyMusicActivity.this, new String[]
+           requestPermissions(new String[]
                     { Manifest.permission.READ_MEDIA_AUDIO }, 1);
         }
     }
@@ -147,7 +157,7 @@ public class MyMusicActivity extends AppCompatActivity {
                 afficheMusic();
             }
             else {
-                Toast.makeText(this, "Permission non accordée", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Permission non accordée", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -162,15 +172,15 @@ public class MyMusicActivity extends AppCompatActivity {
 
         // les donnees a recuperer pour une musique
         String[] proj = { MediaStore.Audio.Media._ID,
-                          MediaStore.Audio.Media.DISPLAY_NAME,
-                          MediaStore.Audio.Media.DATA,
-                          MediaStore.Audio.Media.ALBUM,
-                          MediaStore.Audio.Media.ARTIST,
-                          MediaStore.Audio.Media.TITLE };
+                MediaStore.Audio.Media.DISPLAY_NAME,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.TITLE };
 
         int i = 0;
         // recuperation du fichier
-        Cursor audioCursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj, null, null, null);
+        Cursor audioCursor = requireContext().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj, null, null, null);
         if(audioCursor != null){
             if(audioCursor.moveToFirst()){
                 do{
@@ -205,7 +215,7 @@ public class MyMusicActivity extends AppCompatActivity {
         audioCursor.close();
 
         // ajout des musiques sur un ListView
-        /*ArrayAdapter<String>*/ adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, audioList);
+        /*ArrayAdapter<String>*/ adapter = new ArrayAdapter<>(requireContext(), layout.simple_list_item_1, audioList);
         listV.setAdapter(adapter);
     }
 }

@@ -1,32 +1,43 @@
 package com.app.tunamusic;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import static android.content.Context.BIND_AUTO_CREATE;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import android.os.IBinder;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AbsListView;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class MyMusicActivity extends AppCompatActivity {
+
+public class MaPlaylist1 extends Fragment {
+
     ListView listV; // listView
-    SearchView searchView;
-    CardView cardView;
+    TextView nbTitle;
+    TextView duree;
     ArrayAdapter<String> adapter;
     ArrayList<File> listMusic;
 
@@ -37,14 +48,15 @@ public class MyMusicActivity extends AppCompatActivity {
     ArrayList<String> id = new ArrayList<String>();
 
     Music myMusic;
-
     ArrayList<Music> musicArrayList;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_music);
+    MyService mservice;
+    Boolean isBound;
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_ma_playlist1, container, false);
 
         listMusic = new ArrayList<File>();
         path = new ArrayList<String>();
@@ -53,18 +65,22 @@ public class MyMusicActivity extends AppCompatActivity {
         audioTitle = new ArrayList<String>();
         musicArrayList = new ArrayList<Music>();
 
-        cardView = findViewById(R.id.cardView);
 
+        nbTitle = view.findViewById(R.id.nbTitle);
+        duree = view.findViewById(R.id.duree);
 
         // Lit une musique selectionnee dans la listView
-        listV = findViewById(R.id.listViewSong);
+        listV = view.findViewById(R.id.listVMP1);
         listV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             boolean isTitle = true;
             boolean isArtist = true;
             boolean isAlbum = true;
 
+
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+
                 for (int j = 0; j < musicArrayList.size(); ++j) {
                     isTitle = listV.getItemAtPosition(i).toString().contains(musicArrayList.get(j).getTitle());
                     isArtist = listV.getItemAtPosition(i).toString().contains(musicArrayList.get(j).getArtist());
@@ -73,9 +89,10 @@ public class MyMusicActivity extends AppCompatActivity {
                     if (isTitle && isArtist && isAlbum) {
                         myMusic = new Music(audioTitle.get(j), audioArtist.get(j), audioAlbum.get(j), path.get(j), j);
 
-                        Intent intent = new Intent(getApplicationContext(), LecteurActivity.class);
+                        Intent intent = new Intent(getContext(), LecteurActivity.class);
                         intent.putExtra("MUSIC", myMusic);
                         intent.putParcelableArrayListExtra("MUSIC_ARRAY", musicArrayList);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         break;
                     }
@@ -83,58 +100,46 @@ public class MyMusicActivity extends AppCompatActivity {
             }
         });
 
-       listV.setOnScrollListener(new AbsListView.OnScrollListener() {
-           @Override
-           public void onScrollStateChanged(AbsListView absListView, int i) {
-//               Toast.makeText(getApplicationContext(), "" + absListView., Toast.LENGTH_SHORT).show();
-               int firstVisiblePosition = listV.getFirstVisiblePosition();
 
-               // Accédez à la vue du premier élément visible
-               View firstVisibleView = listV.getChildAt(0);
-               if (firstVisiblePosition == 0 && firstVisibleView != null && firstVisibleView.getTop() == 0) {
-                   cardView.setVisibility(View.VISIBLE); // La liste est defilee vers le haut
-               } else {
-                   cardView.setVisibility(View.GONE); // La liste est défilée vers le bas
-               }
-
-           }
-
-           @Override
-           public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-
-           }
-       });
-
-
-        searchView = findViewById(R.id.searchView);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        // Connexion au service
+        final ServiceConnection connection = new ServiceConnection() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
+            public void onServiceConnected(ComponentName className, IBinder service) {
+                MyService.LocalBinder binder = (MyService.LocalBinder) service;
+                mservice = binder.getService();
+                isBound = true;
             }
 
             @Override
-            public boolean onQueryTextChange(String s) {
-                adapter.getFilter().filter(s);
-                return false;
+            public void onServiceDisconnected(ComponentName className) {
+                mservice = null;
+                isBound = false;
             }
-        });
+        };
+
+
+
+        Intent intentService = new Intent(getContext(), MyService.class);
+        requireActivity().bindService(intentService, connection, BIND_AUTO_CREATE);
+
+
+
+
         runtimePermission();
+
+        return view;
     }
 
-
-
-
     /*
-        Recuperation des permissions
-     */
+       Recuperation des permissions
+    */
     public  void runtimePermission() {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) ==
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(MyMusicActivity.this, "Permission accordée", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Permission accordée", Toast.LENGTH_SHORT).show();
 
         } else {
-            ActivityCompat.requestPermissions(MyMusicActivity.this, new String[]
+            requestPermissions(new String[]
                     { Manifest.permission.READ_MEDIA_AUDIO }, 1);
         }
     }
@@ -145,32 +150,32 @@ public class MyMusicActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 afficheMusic();
+                nbTitle.setText("Nombre de titres : " + musicArrayList.size());
             }
             else {
-                Toast.makeText(this, "Permission non accordée", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Permission non accordée", Toast.LENGTH_SHORT).show();
             }
 
         }
     }
 
-
     /*
-        Liste les musiques dans une listView
-     */
+      Liste les musiques dans une listView
+   */
     void afficheMusic() {
         ArrayList<String> audioList = new ArrayList<>();  // list des audios
 
         // les donnees a recuperer pour une musique
         String[] proj = { MediaStore.Audio.Media._ID,
-                          MediaStore.Audio.Media.DISPLAY_NAME,
-                          MediaStore.Audio.Media.DATA,
-                          MediaStore.Audio.Media.ALBUM,
-                          MediaStore.Audio.Media.ARTIST,
-                          MediaStore.Audio.Media.TITLE };
+                MediaStore.Audio.Media.DISPLAY_NAME,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.TITLE };
 
         int i = 0;
         // recuperation du fichier
-        Cursor audioCursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj, null, null, null);
+        Cursor audioCursor = requireContext().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj, null, null, null);
         if(audioCursor != null){
             if(audioCursor.moveToFirst()){
                 do{
@@ -186,10 +191,6 @@ public class MyMusicActivity extends AppCompatActivity {
                     // prend uniquement le titre + l'artiste + album sur l'affichage de la listView
                     String item = audioTitle.get(i) + " - " + audioArtist.get(i) + " - " +audioAlbum.get(i);
                     audioList.add(item);
-//                    audioList.add(audioCursor.getString(audioIndex)
-//                            .replace(".mp3", "")
-//                            .replace(".wma", "")
-//                            .replace("MP3", ""));
 
 
                     musicArrayList.add(new Music(audioTitle.get(i),
@@ -205,7 +206,28 @@ public class MyMusicActivity extends AppCompatActivity {
         audioCursor.close();
 
         // ajout des musiques sur un ListView
-        /*ArrayAdapter<String>*/ adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, audioList);
+        adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, audioList);
         listV.setAdapter(adapter);
     }
+
+
+    // conversion Milliseconde a minute:seconde
+    public String millisecondToMinuteSeconde(int millis) {
+        long seconds = millis / 1000;
+        long minutes = seconds / 60;
+        seconds = seconds % 60;
+        String str = seconds < 10 ? minutes + "mn 0" + seconds + "s": minutes + "mn " + seconds + "s";
+        return str;
+    }
+
+
+
 }
+
+
+
+
+
+
+
+

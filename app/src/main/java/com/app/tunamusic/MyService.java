@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,10 +23,22 @@ public class MyService extends Service {
 
     MediaPlayer mediaPlayer; // permet la gestion d'un audio
     String path; // contient le chemin d'acces de l'audio
+    String titleArtist; // contient le titre et le l'artiste de l'audio
+    int musicIndex;
+    ArrayList<Music> musicArrayList;
 
     private final IBinder binder = new LocalBinder(); // relie la liaison avec une activity
 
 
+    public Music getMusic() { return musicArrayList.get(musicIndex); }
+    public String getNextPathMusic() { return musicArrayList.get(++musicIndex).getPath(); }
+    public int getMusicIndex() { return musicIndex; }
+    public String getPath() {
+        return path;
+    }
+    public String getTitleArtist() {
+        return titleArtist;
+    }
     public boolean isPlayingMusic() {
         return mediaPlayer.isPlaying();
     }
@@ -68,10 +81,6 @@ public class MyService extends Service {
         }
     }
 
-    private void workBackground() {
-
-    }
-
 
     // gestion de liaison du service avec d'autre activity
     @Nullable
@@ -95,6 +104,9 @@ public class MyService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         path = intent.getStringExtra("MusicPath"); // initialise le chemin d'acces
+        titleArtist = intent.getStringExtra("MUSIC_TITLE");
+        musicIndex = intent.getIntExtra("MUSIC_INDEX", -1);
+        musicArrayList = intent.getParcelableArrayListExtra("LIST_MUSIC");
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release(); // reinitialise mediaplayer
@@ -108,7 +120,6 @@ public class MyService extends Service {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Lecture impossible", Toast.LENGTH_SHORT).show();
         }
-//        return super.onStartCommand(intent, flags, startId);
         return START_STICKY; // Pour que le service soit redémarré automatiquement s'il est tué par le système
     }
 

@@ -7,9 +7,21 @@
     android:background="@color/bgApp"
     tools:context=".MyMusicActivity">
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView2"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="#2A343D"
+        app:labelVisibilityMode="selected"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/menu_button" />
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="720dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,7 +47,8 @@
                     android:background="#5C6E7F"
                     android:backgroundTint="#5C6E80"
                     android:contentDescription="Rechercher"
-                    android:elevation="20dp">
+                    android:elevation="20dp"
+                    android:queryHint="Rechercher">
 
                 </SearchView>
             </androidx.cardview.widget.CardView>

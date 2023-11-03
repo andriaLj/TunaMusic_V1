@@ -2,21 +2,17 @@ package com.app.tunamusic;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.*;
-import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationBarView.OnItemSelectedListener;
 
 import java.util.Timer;
@@ -30,7 +26,7 @@ public class PlaylistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_playlist);
 
         final MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.billie_jean);
-        ImageView btPlay = findViewById(R.id.btPlay);
+        ImageView btPlay = findViewById(R.id.lecteurPlayPause);
         btPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,7 +36,7 @@ public class PlaylistActivity extends AppCompatActivity {
             }
         });
 
-        ImageView btPause = findViewById(R.id.btPause);
+        ImageView btPause = findViewById(R.id.lecteurControl);
         btPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,7 +68,14 @@ public class PlaylistActivity extends AppCompatActivity {
                 if (item.getItemId() == R.id.accueil) {
                     intent = new Intent(getApplicationContext(), AccueilActivity.class);
                     startActivity(intent);
+                } else if (item.getItemId() == R.id.recherche) {
+                    intent = new Intent(getApplicationContext(), PlaylistActivity.class);
+                    startActivity(intent);
+                } else if (item.getItemId() == R.id.menu) {
+//                    intent = new Intent(getApplicationContext(), PlaylistActivity.class);
+//                    startActivity(intent);
                 }
+
                 return false;
             }
         });

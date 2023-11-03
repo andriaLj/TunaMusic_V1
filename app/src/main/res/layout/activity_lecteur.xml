@@ -115,7 +115,7 @@
                                 android:src="@drawable/previous" />
 
                             <ImageView
-                                android:id="@+id/btPlay"
+                                android:id="@+id/lecteurPlayPause"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
                                 android:layout_gravity="bottom"
