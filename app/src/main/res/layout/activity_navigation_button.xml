@@ -17,15 +17,10 @@
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView2"
         tools:layout_editor_absoluteX="5dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/background"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -37,8 +32,9 @@
                 <ImageView
                     android:id="@+id/lecteurImg"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/thriller" />
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_music" />
             </LinearLayout>
 
             <LinearLayout

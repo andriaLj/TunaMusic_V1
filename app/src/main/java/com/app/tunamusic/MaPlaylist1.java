@@ -173,6 +173,7 @@ public class MaPlaylist1 extends Fragment {
                 MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media.TITLE };
 
+
         int i = 0;
         // recuperation du fichier
         Cursor audioCursor = requireContext().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj, null, null, null);

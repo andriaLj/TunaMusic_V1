@@ -108,6 +108,9 @@ public class NavigationButtonActivity extends AppCompatActivity {
             if (mservice.isPlayingMusic()) {
                 lecteur.setVisibility(View.VISIBLE);
                 lecteurTitle.setText(mservice.getTitleArtist());
+                if (mservice.isPlayingMusic()) {
+                    btControl.setImageDrawable(getDrawable(android.R.drawable.ic_media_pause));
+                }
                 btControl.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
