@@ -12,12 +12,14 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -27,6 +29,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.io.File;
 import java.io.IOException;
@@ -122,10 +126,11 @@ public class MaPlaylist1 extends Fragment {
         Intent intentService = new Intent(getContext(), MyService.class);
         requireActivity().bindService(intentService, connection, BIND_AUTO_CREATE);
 
-
-
-
         runtimePermission();
+
+        MaterialToolbar materialToolbar = view.findViewById(R.id.materialToolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(materialToolbar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         return view;
     }
@@ -221,6 +226,22 @@ public class MaPlaylist1 extends Fragment {
         return str;
     }
 
+    private void setFragment(Fragment fragment) {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_layout, fragment)
+                .commit();
+    }
+
+    // Appui sur bouton retour
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            setFragment(new Recherche());
+            Toast.makeText(getContext(), "toto", Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 
 }
