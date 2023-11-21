@@ -193,6 +193,11 @@ public class NavigationButtonActivity extends AppCompatActivity {
                                 seekBarLecteur.setProgress(mservice.getMusicCursor());
                                 Music music = mservice.getMusic();
                                 lecteurTitle.setText(music.getTitle() + " - " + music.getArtist());
+                                if (mservice.isPlayingMusic()) {
+                                    btControl.setImageDrawable(getDrawable(android.R.drawable.ic_media_pause));
+                                } else {
+                                    btControl.setImageDrawable(getDrawable(android.R.drawable.ic_media_play));
+                                }
                             }
                         });
 
