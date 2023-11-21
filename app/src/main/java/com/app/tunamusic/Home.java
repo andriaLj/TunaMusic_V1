@@ -18,6 +18,8 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.util.ArrayList;
+
 
 public class Home extends Fragment {
 
@@ -25,13 +27,35 @@ public class Home extends Fragment {
     private int lastScrollPos = 0;
 
     TextView textView;
+    TextView textAlb1;
+    TextView textAlb2;
+    TextView textAlb3;
+    TextView textAlb4;
+
+    // Traitement de la musique
+    SortMusic sortMusic;
+    NavigationButtonActivity activity;
+    ArrayList<Music> musicArrayList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view  = inflater.inflate(R.layout.fragment_home, container, false);
+
+        activity = (NavigationButtonActivity) getActivity();
+        musicArrayList = activity.getMusicArrayList();
+
+        Toast.makeText(getContext(), "Lanja"+musicArrayList, Toast.LENGTH_SHORT).show();
+//        sortMusic = new SortMusic(musicArrayList);
+
         textView = view.findViewById(R.id.playlist1_title);
+        textAlb1 = view.findViewById(R.id.textAlb1);
+//        textAlb1.setText(sortMusic.getSortedArtist(sortMusic.getListArtist()).get(0));
+
+
+
+
 
         CardView cardPlaylist2 = view.findViewById(R.id.playlist2);
         cardPlaylist2.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +79,12 @@ public class Home extends Fragment {
                         .commit();
             }
         });
+
+
+
+
+
+
 
         registerForContextMenu(cardPlaylist1); // Option sur les cardView
         return view;

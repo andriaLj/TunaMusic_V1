@@ -3,9 +3,21 @@
 
     <item
         android:id="@+id/accueil"
-        android:title="Accueil"
-        android:icon="@drawable/ic_home"
+        android:title="Ma Musique"
+        android:icon="@drawable/artiste"
         />
+
+    <item
+        android:id="@+id/artiste"
+        android:title="Artiste"
+        android:icon="@drawable/ic_chevron_right" />
+
+    <item
+        android:id="@+id/album"
+        android:title="Album"
+        android:icon="@drawable/album" />
+
+
 
     <item
         android:id="@+id/recherche"
@@ -14,10 +26,10 @@
 
 
 
-    <item
-        android:id="@+id/menu"
-        android:title="Menu"
-        android:icon="@drawable/ic_menu"/>
+<!--    <item-->
+<!--        android:id="@+id/menu"-->
+<!--        android:title="Menu"-->
+<!--        android:icon="@drawable/ic_menu"/>-->
 <!--
     <item
         android:id="@+id/back"

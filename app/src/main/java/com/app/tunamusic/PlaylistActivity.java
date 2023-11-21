@@ -71,10 +71,11 @@ public class PlaylistActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.recherche) {
                     intent = new Intent(getApplicationContext(), PlaylistActivity.class);
                     startActivity(intent);
-                } else if (item.getItemId() == R.id.menu) {
-//                    intent = new Intent(getApplicationContext(), PlaylistActivity.class);
-//                    startActivity(intent);
                 }
+//                else if (item.getItemId() == R.id.menu) {
+////                    intent = new Intent(getApplicationContext(), PlaylistActivity.class);
+////                    startActivity(intent);
+//                }
 
                 return false;
             }

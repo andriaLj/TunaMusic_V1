@@ -117,7 +117,6 @@ public class LecteurActivity extends AppCompatActivity {
                     } else
                         btPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_play));
                 }
-
             }
         });
 
@@ -209,7 +208,6 @@ public class LecteurActivity extends AppCompatActivity {
 
         }, 2500, 1000);
 
-
         // reception de donnee depuis le service
         dataReceiver = new BroadcastReceiver() {
             @Override
@@ -217,9 +215,6 @@ public class LecteurActivity extends AppCompatActivity {
 
             }
         };
-
-
-
     }
 
     // conversion Milliseconde a minute:seconde

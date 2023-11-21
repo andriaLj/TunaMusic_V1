@@ -68,11 +68,11 @@ public class AccueilActivity extends AppCompatActivity {
                     intent = new Intent(getApplicationContext(), MyMusicActivity.class);
                     startActivity(intent);
                     overridePendingTransition(0, 0);
-
-                } else if (item.getItemId() == R.id.menu) {
-//                    intent = new Intent(getApplicationContext(), PlaylistActivity.class);
-//                    startActivity(intent);
                 }
+//                } else if (item.getItemId() == R.id.menu) {
+////                    intent = new Intent(getApplicationContext(), PlaylistActivity.class);
+////                    startActivity(intent);
+//                }
 
                 return false;
             }

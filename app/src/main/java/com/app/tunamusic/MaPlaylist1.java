@@ -43,13 +43,6 @@ public class MaPlaylist1 extends Fragment {
     TextView nbTitle;
     TextView duree;
     ArrayAdapter<String> adapter;
-    ArrayList<File> listMusic;
-
-    ArrayList<String> path;
-    ArrayList<String> audioAlbum;
-    ArrayList<String> audioArtist;
-    ArrayList<String> audioTitle;
-    ArrayList<String> id = new ArrayList<String>();
 
     Music myMusic;
     ArrayList<Music> musicArrayList;
@@ -57,18 +50,16 @@ public class MaPlaylist1 extends Fragment {
     MyService mservice;
     Boolean isBound;
 
+
+    NavigationButtonActivity activity;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ma_playlist1, container, false);
 
-        listMusic = new ArrayList<File>();
-        path = new ArrayList<String>();
-        audioAlbum = new ArrayList<String>();
-        audioArtist = new ArrayList<String>();
-        audioTitle = new ArrayList<String>();
-        musicArrayList = new ArrayList<Music>();
-
+        activity = (NavigationButtonActivity) getActivity();
+        musicArrayList = activity.getMusicArrayList();
 
         nbTitle = view.findViewById(R.id.nbTitle);
         duree = view.findViewById(R.id.duree);
@@ -84,14 +75,15 @@ public class MaPlaylist1 extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-
                 for (int j = 0; j < musicArrayList.size(); ++j) {
                     isTitle = listV.getItemAtPosition(i).toString().contains(musicArrayList.get(j).getTitle());
                     isArtist = listV.getItemAtPosition(i).toString().contains(musicArrayList.get(j).getArtist());
                     isAlbum = listV.getItemAtPosition(i).toString().contains(musicArrayList.get(j).getAlbum());
 
                     if (isTitle && isArtist && isAlbum) {
-                        myMusic = new Music(audioTitle.get(j), audioArtist.get(j), audioAlbum.get(j), path.get(j), j);
+                        myMusic = new Music(musicArrayList.get(j).getTitle(),
+                                musicArrayList.get(j).getArtist(), musicArrayList.get(j).getAlbum(),
+                                musicArrayList.get(j).getPath(), j);
 
                         Intent intent = new Intent(getContext(), LecteurActivity.class);
                         intent.putExtra("MUSIC", myMusic);
@@ -168,51 +160,8 @@ public class MaPlaylist1 extends Fragment {
       Liste les musiques dans une listView
    */
     void afficheMusic() {
-        ArrayList<String> audioList = new ArrayList<>();  // list des audios
-
-        // les donnees a recuperer pour une musique
-        String[] proj = { MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.DISPLAY_NAME,
-                MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.ALBUM,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.TITLE };
-
-
-        int i = 0;
-        // recuperation du fichier
-        Cursor audioCursor = requireContext().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj, null, null, null);
-        if(audioCursor != null){
-            if(audioCursor.moveToFirst()){
-                do{
-                    int audioIndex = audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME);
-
-
-                    id.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)));
-                    path.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)));
-                    audioAlbum.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)));
-                    audioArtist.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)));
-                    audioTitle.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)));
-
-                    // prend uniquement le titre + l'artiste + album sur l'affichage de la listView
-                    String item = audioTitle.get(i) + " - " + audioArtist.get(i) + " - " +audioAlbum.get(i);
-                    audioList.add(item);
-
-
-                    musicArrayList.add(new Music(audioTitle.get(i),
-                            audioArtist.get(i),
-                            audioAlbum.get(i),
-                            path.get(i),
-                            i));
-                    ++i;
-
-                } while(audioCursor.moveToNext());
-            }
-        }
-        audioCursor.close();
-
-        // ajout des musiques sur un ListView
-        adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, audioList);
+        ArrayList<String> audioList = activity.getAudioList();  // list des audios
+        adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, audioList); // ajout des musiques sur un ListView
         listV.setAdapter(adapter);
     }
 
