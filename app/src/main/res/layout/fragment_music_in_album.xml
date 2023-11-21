@@ -17,7 +17,7 @@
             android:orientation="vertical">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbarAccueil"
+                android:id="@+id/toolbarAlbum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/bgApp"
@@ -32,7 +32,7 @@
                 app:titleTextColor="#FFFFFF" />
 
             <ListView
-                android:id="@+id/listVArtist"
+                android:id="@+id/listV"
                 android:layout_width="match_parent"
                 android:layout_height="650dp"
                 android:cacheColorHint="#FAFAFA"

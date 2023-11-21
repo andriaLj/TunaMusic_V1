@@ -137,6 +137,11 @@ public class LecteurActivity extends AppCompatActivity {
             }
         };
 
+        //--------- METTRE CODE NOTIFICATION ICI -----------
+
+
+        //---------------------- END NOTIF -----------------
+
 
         Intent intent = getIntent();
         music = intent.getParcelableExtra("MUSIC");

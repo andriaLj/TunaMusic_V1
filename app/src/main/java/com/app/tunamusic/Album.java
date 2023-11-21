@@ -2,7 +2,6 @@ package com.app.tunamusic;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -10,10 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -197,7 +196,18 @@ public class Album extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getContext(), ""+listAlbum.get(i), Toast.LENGTH_SHORT).show();
+                    ArrayList<Music> arr = getMusicAlbum(musicArrayList);
+
+                    Bundle result = new Bundle();
+                    result.putParcelableArrayList("MUSIC_ARRAY", arr);
+//                    result.putSerializable("ALBUM_TITLE", listAlbum.get(i));
+                    getParentFragmentManager().setFragmentResult("requestKey", result);
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.frame_layout, new MusicInAlbum())
+                            .commit();
+
+//                    Toast.makeText(getContext(), ""+getMusicAlbum(musicArrayList), Toast.LENGTH_SHORT).show();
 //                    ArrayList<Music> arr = getMusicAlbum(musicArrayList);
 //                    Music myMusic = new Music(arr.get(i).getTitle(), arr.get(i).getArtist(), arr.get(i).getAlbum(), arr.get(i).getPath(), i);
 //                    Intent intent = new Intent(getContext(), LecteurActivity.class);
