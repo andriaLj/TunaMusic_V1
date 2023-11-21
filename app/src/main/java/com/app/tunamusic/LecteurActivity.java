@@ -1,9 +1,11 @@
 package com.app.tunamusic;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static com.app.tunamusic.App.CHANNEL_1_ID;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -17,6 +19,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -60,6 +65,7 @@ public class LecteurActivity extends AppCompatActivity {
         seekBar = findViewById(R.id.seekBar);
 
         infoMusic = findViewById(R.id.txt_info);
+
         minSec = findViewById(R.id.minSectxt);
 
         btPlay = findViewById(R.id.lecteurPlayPause);
@@ -99,8 +105,7 @@ public class LecteurActivity extends AppCompatActivity {
                     if (mservice.isPlayingMusic()) {
                         isPlaying = true;
                         btPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.baseline_pause_circle_filled_24));
-                    }
-                    else
+                    } else
                         btPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_play));
                 }
             }
@@ -142,6 +147,7 @@ public class LecteurActivity extends AppCompatActivity {
                 MyService.LocalBinder binder = (MyService.LocalBinder) service;
                 mservice = binder.getService();
                 isBound = true;
+                sendNotification(mservice);
             }
 
             @Override
@@ -151,9 +157,6 @@ public class LecteurActivity extends AppCompatActivity {
             }
         };
         //--------- METTRE CODE NOTIFICATION ICI -----------
-        notificationManager.notify();
-
-
 
 
         Intent intent = getIntent();
@@ -260,17 +263,34 @@ public class LecteurActivity extends AppCompatActivity {
     }
 
     //--------- METTRE CODE NOTIFICATION ICI -----------
-    public void sendNotification(View v){
+    public void sendNotification(MyService service) {
+        String title = infoMusic.getText().toString().split("-")[0];
+        String artiste = infoMusic.getText().toString().split("-")[1];
+        Bitmap artwork = BitmapFactory.decodeResource(getResources(), R.drawable.album);
+        Bitmap playButton = BitmapFactory.decodeResource(getResources(), R.drawable.bouton__jouer);
 
-        Intent activityIntent = new Intent(this,LecteurActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this,0,activityIntent,PendingIntent.FLAG_IMMUTABLE);
-
-
-        Notification notification = new NotificationCompat.Builder(this,CHANNEL_1_ID)
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                .setContentTitle(title)
+                .setContentText(artiste)
+                .setLargeIcon(artwork)
                 .setSmallIcon(R.drawable.logo__2_)
-                .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                .setContentIntent(contentIntent)
+                .addAction(R.drawable.ic_action_previous, "Previous", null)
+                .addAction(R.drawable.ic_action_play, "Play", null)
+                .addAction(R.drawable.ic_action_next, "Next", null)
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(0, 1, 2))
                 .build();
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        notificationManager.notify(1, notification);
     }
     //---------------------- END NOTIF -----------------
 
