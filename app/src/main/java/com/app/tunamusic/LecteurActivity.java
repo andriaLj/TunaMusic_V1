@@ -1,11 +1,17 @@
 package com.app.tunamusic;
 
+import static com.app.tunamusic.App.CHANNEL_1_ID;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -41,11 +47,15 @@ public class LecteurActivity extends AppCompatActivity {
     BroadcastReceiver dataReceiver;
     Boolean isPlaying = true;
 
+    private NotificationManagerCompat notificationManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecteur);
+
+        notificationManager = NotificationManagerCompat.from(this);
 
         seekBar = findViewById(R.id.seekBar);
 
@@ -136,11 +146,10 @@ public class LecteurActivity extends AppCompatActivity {
                 isBound = false;
             }
         };
-
         //--------- METTRE CODE NOTIFICATION ICI -----------
+        notificationManager.notify();
 
 
-        //---------------------- END NOTIF -----------------
 
 
         Intent intent = getIntent();
@@ -245,4 +254,20 @@ public class LecteurActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
     }
+
+    //--------- METTRE CODE NOTIFICATION ICI -----------
+    public void sendNotification(View v){
+
+        Intent activityIntent = new Intent(this,LecteurActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this,0,activityIntent,PendingIntent.FLAG_IMMUTABLE);
+
+
+        Notification notification = new NotificationCompat.Builder(this,CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.logo__2_)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setContentIntent(contentIntent)
+                .build();
+    }
+    //---------------------- END NOTIF -----------------
+
 }
