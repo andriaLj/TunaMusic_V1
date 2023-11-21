@@ -110,15 +110,19 @@ public class LecteurActivity extends AppCompatActivity {
         btNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
                 if (isBound && mservice != null) {
                     // evite tout depassement
-                    if (music.getIndex() == musicArrayList.size() - 1) {
+                    if (music.getIndex() >= musicArrayList.size() - 1) {
                         mservice.setPath(musicArrayList.get(0).getPath());
                         music = musicArrayList.get(0);
                         infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                     } else {
-                        mservice.setPath(musicArrayList.get(music.getIndex() + 1).getPath());
-                        music = musicArrayList.get(music.getIndex() + 1);
+//                        mservice.setPath(musicArrayList.get(music.getIndex() + 1).getPath());
+                        mservice.setPath(mservice.getNextPathMusic());
+                        music = mservice.getMusic();
+//                        music = musicArrayList.get(music.getIndex() + 1);
                         infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                     }
                     if (mservice.isPlayingMusic()) {

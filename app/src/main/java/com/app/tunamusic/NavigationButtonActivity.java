@@ -191,6 +191,8 @@ public class NavigationButtonActivity extends AppCompatActivity {
                             public void run() {
                                 seekBarLecteur.setMax(mservice.getMusicDuration());
                                 seekBarLecteur.setProgress(mservice.getMusicCursor());
+                                Music music = mservice.getMusic();
+                                lecteurTitle.setText(music.getTitle() + " - " + music.getArtist());
                             }
                         });
 

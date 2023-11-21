@@ -166,11 +166,6 @@ public class Album extends Fragment {
             listAlbum = getAlbumList(musicArray);
         }
 
-//        public CustumAdapter(Context context, ArrayList<String> listAlbum) {
-//            this.context = context;
-//            this.listAlbum = listAlbum;
-//        }
-
         @Override
         public int getCount() {
             return listAlbum.size();
@@ -190,8 +185,7 @@ public class Album extends Fragment {
         public View getView(int i, View view, ViewGroup viewGroup) {
             view = getLayoutInflater().inflate(R.layout.list_item_album, null);
             TextView txtTitle = view.findViewById(R.id.txtAlbum);
-            txtTitle.setText(listAlbum.get(i));
-
+            txtTitle.setText(listAlbum.get(i).toUpperCase());
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -200,20 +194,17 @@ public class Album extends Fragment {
 
                     Bundle result = new Bundle();
                     result.putParcelableArrayList("MUSIC_ARRAY", arr);
-//                    result.putSerializable("ALBUM_TITLE", listAlbum.get(i));
-                    getParentFragmentManager().setFragmentResult("requestKey", result);
+                    result.putString("ALBUM", listAlbum.get(i));
+
+
+                    // Changement de fragement
+                    Fragment fragment = new MusicInAlbum();
+                    fragment.setArguments(result);
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.frame_layout, new MusicInAlbum())
+                            .replace(R.id.frame_layout, fragment)
                             .commit();
 
-//                    Toast.makeText(getContext(), ""+getMusicAlbum(musicArrayList), Toast.LENGTH_SHORT).show();
-//                    ArrayList<Music> arr = getMusicAlbum(musicArrayList);
-//                    Music myMusic = new Music(arr.get(i).getTitle(), arr.get(i).getArtist(), arr.get(i).getAlbum(), arr.get(i).getPath(), i);
-//                    Intent intent = new Intent(getContext(), LecteurActivity.class);
-//                    intent.putExtra("MUSIC", myMusic);
-//                    intent.putParcelableArrayListExtra("MUSIC_ARRAY", arr);
-//                    startActivity(intent);
                 }
             });
             return view;
