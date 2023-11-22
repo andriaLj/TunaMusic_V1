@@ -2,6 +2,7 @@ package com.app.tunamusic;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -89,8 +90,7 @@ public class LecteurActivity extends AppCompatActivity {
                     if (mservice.isPlayingMusic()) {
                         isPlaying = true;
                         btPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.baseline_pause_circle_filled_24));
-                    }
-                    else
+                    } else
                         btPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_play));
                 }
             }
@@ -187,8 +187,9 @@ public class LecteurActivity extends AppCompatActivity {
                                     music = musicArrayList.get(0);
                                     infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                                 } else {
-                                    mservice.setPath(musicArrayList.get(music.getIndex() + 1).getPath());
-                                    music = musicArrayList.get(music.getIndex() + 1);
+//                                    mservice.setPath(musicArrayList.get(music.getIndex() + 1).getPath());
+                                    mservice.setPath(mservice.getNextPathMusic());
+                                    music = /*musicArrayList.get(music.getIndex() + 1);*/ mservice.getMusic();
                                     infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                                 }
                             }
@@ -224,6 +225,8 @@ public class LecteurActivity extends AppCompatActivity {
 
             }
         };
+
+
     }
 
     // conversion Milliseconde a minute:seconde
@@ -248,5 +251,12 @@ public class LecteurActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
     }
 }

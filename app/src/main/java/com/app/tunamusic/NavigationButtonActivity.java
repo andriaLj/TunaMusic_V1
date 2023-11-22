@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.view.GestureDetector;
 import android.view.MenuItem;
 
 import android.os.Bundle;
@@ -60,6 +61,9 @@ public class NavigationButtonActivity extends AppCompatActivity {
 
 
     ProgressBar seekBarLecteur;
+
+    private GestureDetector gestureDetector;
+
 
     // GETTERS
     public ArrayList<Music> getMusicArrayList() {
@@ -135,6 +139,16 @@ public class NavigationButtonActivity extends AppCompatActivity {
         Intent intentService = new Intent(getApplicationContext(), MyService.class);
         bindService(intentService, connection, BIND_AUTO_CREATE);
 
+        // Initialize GestureDetector
+        gestureDetector = new GestureDetector(this, new MyGestureListener());
+        lecteur.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return gestureDetector.onTouchEvent(motionEvent);
+            }
+        });
+
+
 
         runtimePermission();
 
@@ -187,17 +201,25 @@ public class NavigationButtonActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.post(new Runnable() {
+                            Music music;
                             @Override
                             public void run() {
+                                if (mservice.getMusicCursor() + 500 >= mservice.getMusicDuration()) {
+                                    mservice.setPath(mservice.getNextPathMusic());
+                                    music = mservice.getMusic();
+                                    lecteurTitle.setText(music.getTitle() + " - " + music.getArtist());
+                                }
                                 seekBarLecteur.setMax(mservice.getMusicDuration());
                                 seekBarLecteur.setProgress(mservice.getMusicCursor());
-                                Music music = mservice.getMusic();
+                                music = mservice.getMusic();
                                 lecteurTitle.setText(music.getTitle() + " - " + music.getArtist());
                                 if (mservice.isPlayingMusic()) {
                                     btControl.setImageDrawable(getDrawable(android.R.drawable.ic_media_pause));
                                 } else {
                                     btControl.setImageDrawable(getDrawable(android.R.drawable.ic_media_play));
                                 }
+
+
                             }
                         });
 
@@ -291,4 +313,48 @@ public class NavigationButtonActivity extends AppCompatActivity {
         audioCursor.close();
     }
 
+    // Custom GestureListener to handle swipe gestures
+    private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+        private static final int SWIPE_THRESHOLD = 100;
+        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            float diffX = e2.getX() - e1.getX();
+            float diffY = e2.getY() - e1.getY();
+
+            if (Math.abs(diffX) > Math.abs(diffY) &&
+                    Math.abs(diffX) > SWIPE_THRESHOLD &&
+                    Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                // Right swipe
+                if (diffX > 0) {
+                    mservice.setPath(mservice.getPreviousPathMusic()); // go to previous music
+                    return true;
+                }
+                // Left swipe
+                else {
+                    mservice.setPath(mservice.getNextPathMusic()); // go to next music
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+        finish();
+    }
 }

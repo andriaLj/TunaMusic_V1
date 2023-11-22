@@ -38,7 +38,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         }, 2500);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
 
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+        finish();
     }
 }

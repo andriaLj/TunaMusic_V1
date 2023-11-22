@@ -15,7 +15,9 @@
         app:cardBackgroundColor="@color/bgcolor"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView2"
-        tools:layout_editor_absoluteX="5dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,10 +62,10 @@
                         android:id="@+id/lecteurTitle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="center_horizontal"
                         android:layout_weight="1"
                         android:fontFamily="@font/comic_neue_bold"
-                        android:gravity="center_vertical"
+                        android:gravity="center"
                         android:text="Billie Jean"
                         android:textAlignment="center"
                         android:textColor="#FAF1F1" />

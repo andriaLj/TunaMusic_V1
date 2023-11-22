@@ -31,6 +31,10 @@ public class MyService extends Service {
 
 
     public Music getMusic() { return musicArrayList.get(musicIndex); }
+    public String getPreviousPathMusic() {
+        return musicIndex == 0 ? musicArrayList.get(musicIndex = (musicArrayList.size() - 1)).getPath() :
+                                musicArrayList.get(--musicIndex).getPath();
+    }
     public String getNextPathMusic() {
         return musicIndex >= musicArrayList.size() - 1 ?
                 musicArrayList.get(musicIndex = 0).getPath() : musicArrayList.get(++musicIndex).getPath();
