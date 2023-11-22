@@ -59,11 +59,26 @@ public class NavigationButtonActivity extends AppCompatActivity {
     ArrayList<Music> musicArrayList;
     ArrayList<String> audioList;
 
+    ArrayList<Music> favoriArrayList;
+
 
     ProgressBar seekBarLecteur;
 
     private GestureDetector gestureDetector;
 
+    public void removeMusicTOFavoris(int index) {
+        if (favoriArrayList == null) return;
+        favoriArrayList.remove(index);
+    }
+
+    public void addMusicToFavoris(Music music) {
+        if (favoriArrayList == null) favoriArrayList = new ArrayList<>();
+        favoriArrayList.add(music);
+    }
+
+    public ArrayList<Music> getFavoriArrayList() {
+        return favoriArrayList;
+    }
 
     // GETTERS
     public ArrayList<Music> getMusicArrayList() {
@@ -112,6 +127,8 @@ public class NavigationButtonActivity extends AppCompatActivity {
                     setFragment(new Album());
                 } else if (id == R.id.recherche) {
                     setFragment(new Recherche());
+                } else if (id == R.id.maFavori) {
+                    setFragment(new Favoris());
                 }
                 return true;
             }

@@ -15,6 +15,7 @@ public class Music implements Parcelable {
     private String album;
     private String path;
     private int index; // indice de la musique dansl la liste
+    private String albumCover;
 
     // permet de caster l'objet Music (passage d'une activity a une autre avec putExtra
     protected Music(Parcel in) {
@@ -23,6 +24,8 @@ public class Music implements Parcelable {
         album = in.readString();
         path = in.readString();
         index = in.readInt();
+//        if (sendAlbumCover)
+//            albumCover = in.readString();
     }
 
 
@@ -46,6 +49,15 @@ public class Music implements Parcelable {
         album = audioAlbum;
         this.path = path;
         this.index = index;
+    }
+
+    public Music(String audioTitle, String audioArtist, String audioAlbum, String path, int index, String albumCover) {
+        title = audioTitle;
+        artist = audioArtist;
+        album = audioAlbum;
+        this.path = path;
+        this.index = index;
+        this.albumCover = albumCover;
     }
 
     // GETTERS

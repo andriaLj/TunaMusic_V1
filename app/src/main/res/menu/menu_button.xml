@@ -13,16 +13,23 @@
         android:icon="@drawable/ic_chevron_right" />
 
     <item
+        android:id="@+id/recherche"
+        android:title="Rechercher"
+        android:icon="@drawable/ic_search"/>
+
+    <item
         android:id="@+id/album"
         android:title="Album"
         android:icon="@drawable/album" />
 
 
-
     <item
-        android:id="@+id/recherche"
-        android:title="Rechercher"
-        android:icon="@drawable/ic_search"/>
+        android:id="@+id/maFavori"
+        android:title="Favoris"
+        android:icon="@drawable/ic_favoris" />
+
+
+
 
 
 

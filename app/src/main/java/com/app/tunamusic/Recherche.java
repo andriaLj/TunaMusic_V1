@@ -8,12 +8,16 @@ import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -196,11 +200,6 @@ public class Recherche extends Fragment {
                     // prend uniquement le titre + l'artiste + album sur l'affichage de la listView
                     String item = audioTitle.get(i) + " - " + audioArtist.get(i) + " - " +audioAlbum.get(i);
                     audioList.add(item);
-//                    audioList.add(audioCursor.getString(audioIndex)
-//                            .replace(".mp3", "")
-//                            .replace(".wma", "")
-//                            .replace("MP3", ""));
-
 
                     musicArrayList.add(new Music(audioTitle.get(i),
                             audioArtist.get(i),
@@ -217,5 +216,24 @@ public class Recherche extends Fragment {
         // ajout des musiques sur un ListView
         /*ArrayAdapter<String>*/ adapter = new ArrayAdapter<>(requireContext(), layout.simple_list_item_1, audioList);
         listV.setAdapter(adapter);
+
+        registerForContextMenu(listV);
+    }
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        MenuInflater inflater = requireActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.favori) {
+            Toast.makeText(getContext(), "Ajouté aux favoris", Toast.LENGTH_SHORT).show();
+        }
+
+        return super.onContextItemSelected(item);
     }
 }

@@ -17,36 +17,31 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 
-public class HomeV1 extends Fragment {
-
-    ListView listV;
+public class Favoris extends Fragment {
     ArrayList<Music> musicArrayList;
     NavigationButtonActivity activity;
     CustumAdapter adapter;
-    Boolean isAdded = false;
     int index;
+    ListView listV;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_home_v1, container, false);
+        View view = inflater.inflate(R.layout.fragment_favoris, container, false);
 
         activity  = (NavigationButtonActivity) getActivity();
-        listV = view.findViewById(R.id.listVArtist);
+        listV = view.findViewById(R.id.listV);
 
         runtimePermission();
-
-
         return view;
     }
 
@@ -80,9 +75,11 @@ public class HomeV1 extends Fragment {
       Liste les musiques dans une listView
    */
     void afficheMusic() {
-        musicArrayList = activity.getMusicArrayList();
-        adapter = new CustumAdapter(getContext(), activity.getMusicArrayList()); // ajout des musiques sur un ListView
-        listV.setAdapter(adapter);
+        ArrayList<Music> favoris = activity.getFavoriArrayList();
+        if (favoris != null) {
+            adapter = new CustumAdapter(getContext(), favoris); // ajout des musiques sur un ListView
+            listV.setAdapter(adapter);
+        }
     }
 
 
@@ -124,11 +121,11 @@ public class HomeV1 extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Music myMusic = new Music(musicArrayList.get(i).getTitle(), musicArrayList.get(i).getArtist(), musicArrayList.get(i).getAlbum(), musicArrayList.get(i).getPath(), i);
+                    Music myMusic = new Music(musicArray.get(i).getTitle(), musicArray.get(i).getArtist(), musicArray.get(i).getAlbum(), musicArray.get(i).getPath(), i);
 
                     Intent intent = new Intent(getContext(), LecteurActivity.class);
                     intent.putExtra("MUSIC", myMusic);
-                    intent.putParcelableArrayListExtra("MUSIC_ARRAY", musicArrayList);
+                    intent.putParcelableArrayListExtra("MUSIC_ARRAY", activity.getFavoriArrayList());
                     startActivity(intent);
                 }
             });
@@ -151,17 +148,17 @@ public class HomeV1 extends Fragment {
         super.onCreateContextMenu(menu, v, menuInfo);
 
         MenuInflater inflater = requireActivity().getMenuInflater();
-        inflater.inflate(R.menu.context_menu, menu);
+        inflater.inflate(R.menu.context_menu_delete, menu);
     }
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.favori) {
-            activity.addMusicToFavoris(musicArrayList.get(index));
-            Toast.makeText(getContext(), "Ajoutée aux favoris", Toast.LENGTH_SHORT).show();
+        if (item.getItemId() == R.id.supprimer) {
+            activity.removeMusicTOFavoris(index);
+            afficheMusic();
+            Toast.makeText(getContext(), "Supprimée", Toast.LENGTH_SHORT).show();
         }
 
         return super.onContextItemSelected(item);
     }
-
 }
