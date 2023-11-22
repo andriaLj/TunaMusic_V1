@@ -62,6 +62,7 @@ public class MyService extends Service {
         return mediaPlayer.getDuration();
     }
 
+
     // lance la lecture de la musique
     public void playMusic() {
         if (mediaPlayer != null && !mediaPlayer.isPlaying()) mediaPlayer.start();
