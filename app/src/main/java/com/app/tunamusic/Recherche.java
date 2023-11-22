@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -130,6 +131,24 @@ public class Recherche extends Fragment {
                 return false;
             }
         });
+
+        searchView.setIconified(false); // Set the SearchView as expanded
+        // Request focus on the SearchView
+        searchView.setFocusable(true);
+        searchView.setFocusableInTouchMode(true);
+        searchView.requestFocus();
+
+        view.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // affiche le clavier
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(getContext().INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchView, InputMethodManager.SHOW_IMPLICIT);
+            }
+        }, 200); //  un petit delay necessaire avant d'afficher le clavier
+
+
+
         runtimePermission();
 
 
