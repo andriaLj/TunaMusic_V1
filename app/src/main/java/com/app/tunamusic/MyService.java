@@ -43,6 +43,9 @@ public class MyService extends Service {
     public String getPath() {
         return path;
     }
+    public void setTitleArtist(String titleArtist) {
+        this.titleArtist = titleArtist;
+    }
     public String getTitleArtist() {
         return titleArtist;
     }

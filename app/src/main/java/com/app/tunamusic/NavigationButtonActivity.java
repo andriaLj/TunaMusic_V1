@@ -65,22 +65,6 @@ public class NavigationButtonActivity extends AppCompatActivity {
     MyDataBase db;
 
 
-//    ArrayList<Music> readAllDataBase() {
-//        Cursor cursor = db.getAllInfo();
-//        ArrayList<Music> listMusic = new ArrayList<>();
-//        int i = 0;
-//        if (cursor != null && cursor.getCount() > 0) {
-//            while (cursor.moveToNext()) {
-//                listMusic.add(new Music(cursor.getString(0), // titre
-//                        cursor.getString(1), // artiste
-//                        cursor.getString(2), // album
-//                        cursor.getString(3), // path
-//                        i++)); // index
-//            }
-//        }
-//        return listMusic;
-//    }
-
     public MyDataBase getDb() {
         return db;
     }
@@ -223,8 +207,6 @@ public class NavigationButtonActivity extends AppCompatActivity {
             }
         });
 
-
-
         runtimePermission();
 
     }
@@ -282,12 +264,14 @@ public class NavigationButtonActivity extends AppCompatActivity {
                                 if (mservice.getMusicCursor() + 500 >= mservice.getMusicDuration()) {
                                     mservice.setPath(mservice.getNextPathMusic());
                                     music = mservice.getMusic();
-                                    lecteurTitle.setText(music.getTitle() + " - " + music.getArtist());
+                                    mservice.setTitleArtist(music.getTitle() + " - " + music.getArtist());
+                                    lecteurTitle.setText(mservice.getTitleArtist());
                                 }
                                 seekBarLecteur.setMax(mservice.getMusicDuration());
                                 seekBarLecteur.setProgress(mservice.getMusicCursor());
                                 music = mservice.getMusic();
-                                lecteurTitle.setText(music.getTitle() + " - " + music.getArtist());
+                                mservice.setTitleArtist(music.getTitle() + " - " + music.getArtist());
+                                lecteurTitle.setText(mservice.getTitleArtist());
                                 if (mservice.isPlayingMusic()) {
                                     btControl.setImageDrawable(getDrawable(android.R.drawable.ic_media_pause));
                                 } else {
@@ -417,6 +401,18 @@ public class NavigationButtonActivity extends AppCompatActivity {
                     return true;
                 }
             }
+
+            if (e1.getY() > e2.getY()) {
+                // MOVE UP
+                Intent intent = new Intent(getApplicationContext(), LecteurActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
+            } else {
+                // MOVE DOWN
+                mservice.pauseMusic();
+                lecteur.setVisibility(View.GONE);
+            }
+
             return false;
         }
     }

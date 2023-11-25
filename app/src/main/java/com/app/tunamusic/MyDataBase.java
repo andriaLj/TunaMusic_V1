@@ -47,13 +47,11 @@ public class MyDataBase extends SQLiteOpenHelper {
         return result != -1;
     }
 
-
     // READ
     public Cursor getAllInfo() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("Select * from " + TABLE_NAME, null);
     }
-
 
     // DELETE
     public void deleteInfo(Music music) {
@@ -66,7 +64,5 @@ public class MyDataBase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME);
     }
-
-
 
 }

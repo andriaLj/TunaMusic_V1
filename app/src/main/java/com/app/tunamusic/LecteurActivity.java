@@ -47,6 +47,8 @@ public class LecteurActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecteur);
 
+
+
         seekBar = findViewById(R.id.seekBar);
 
         infoMusic = findViewById(R.id.txt_info);
@@ -64,6 +66,7 @@ public class LecteurActivity extends AppCompatActivity {
                     btPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.baseline_pause_circle_filled_24));
                 }
                 isPlaying = mservice.isPlayingMusic();
+
             }
         });
 
@@ -154,7 +157,7 @@ public class LecteurActivity extends AppCompatActivity {
         infoMusic.setText(infoToPrint);
 
         Intent intentService = new Intent(getApplicationContext(), MyService.class);
-        intentService.putExtra("MUSIC_TITLE", music.getTitle() + " " + music.getArtist());
+        intentService.putExtra("MUSIC_TITLE", music.getTitle() + " - " + music.getArtist());
         intentService.putExtra("MusicPath", music.getPath());
         intentService.putParcelableArrayListExtra("LIST_MUSIC", musicArrayList);
         intentService.putExtra("MUSIC_INDEX", music.getIndex());
@@ -217,13 +220,6 @@ public class LecteurActivity extends AppCompatActivity {
 
         }, 2500, 1000);
 
-        // reception de donnee depuis le service
-        dataReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-            }
-        };
     }
 
     // conversion Milliseconde a minute:seconde
@@ -240,13 +236,33 @@ public class LecteurActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            Intent intent = new Intent(getApplicationContext(), NavigationButtonActivity.class);
+            moveTaskToBack(true);
+            startActivity(intent);
+
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), NavigationButtonActivity.class);
+        moveTaskToBack(true);
+        startActivity(intent);
+    }
+
+
+    @Override
     protected void onResume() {
         super.onResume();
+        if (mservice != null && isBound) {
+            infoMusic.setText(mservice.getTitleArtist());
+            isPlaying = mservice.isPlayingMusic();
+            if (!isPlaying) {
+                btPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_play));
+            }
+        }
+
     }
 }

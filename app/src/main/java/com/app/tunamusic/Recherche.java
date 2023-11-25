@@ -98,7 +98,6 @@ public class Recherche extends Fragment {
         listV.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
-//               Toast.makeText(getApplicationContext(), "" + absListView., Toast.LENGTH_SHORT).show();
                 int firstVisiblePosition = listV.getFirstVisiblePosition();
 
                 // Accédez à la vue du premier élément visible
@@ -116,7 +115,6 @@ public class Recherche extends Fragment {
 
             }
         });
-
 
         searchView = view.findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -147,12 +145,7 @@ public class Recherche extends Fragment {
             }
         }, 200); //  un petit delay necessaire avant d'afficher le clavier
 
-
-
         runtimePermission();
-
-
-
 
 
         return view;
@@ -208,7 +201,6 @@ public class Recherche extends Fragment {
             if(audioCursor.moveToFirst()){
                 do{
                     int audioIndex = audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME);
-
 
                     id.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)));
                     path.add(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)));
