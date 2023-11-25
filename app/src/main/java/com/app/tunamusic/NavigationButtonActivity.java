@@ -1,11 +1,8 @@
 package com.app.tunamusic;
 
-import static java.security.AccessController.getContext;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.motion.widget.OnSwipe;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -27,15 +24,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -66,17 +62,77 @@ public class NavigationButtonActivity extends AppCompatActivity {
 
     private GestureDetector gestureDetector;
 
+    MyDataBase db;
+
+
+//    ArrayList<Music> readAllDataBase() {
+//        Cursor cursor = db.getAllInfo();
+//        ArrayList<Music> listMusic = new ArrayList<>();
+//        int i = 0;
+//        if (cursor != null && cursor.getCount() > 0) {
+//            while (cursor.moveToNext()) {
+//                listMusic.add(new Music(cursor.getString(0), // titre
+//                        cursor.getString(1), // artiste
+//                        cursor.getString(2), // album
+//                        cursor.getString(3), // path
+//                        i++)); // index
+//            }
+//        }
+//        return listMusic;
+//    }
+
+    public MyDataBase getDb() {
+        return db;
+    }
+
+    public void deleteAllMusicInFavoris() {
+        db.deleteAllInfo();
+    }
     public void removeMusicTOFavoris(int index) {
         if (favoriArrayList == null) return;
+        db.deleteInfo(favoriArrayList.get(index));
         favoriArrayList.remove(index);
     }
 
     public void addMusicToFavoris(Music music) {
-        if (favoriArrayList == null) favoriArrayList = new ArrayList<>();
-        favoriArrayList.add(music);
+        boolean res = db.insert(music);
+        if (res) {
+            Toast.makeText(getApplicationContext(), "Ajoutée aux favoris", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Echec", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public ArrayList<Music> getFavoriArrayList() {
+        /*if (favoriArrayList == null)*/favoriArrayList = new ArrayList<>();
+        Cursor cursor = db.getAllInfo();
+        int i = 0;
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                favoriArrayList.add(new Music(cursor.getString(1), // titre
+                        "", // artiste
+                        "", // album
+                        "", // path
+                        i++)); // index
+            }
+
+            int size = musicArrayList.size();
+            HashMap<String, Music> map = new HashMap<>();
+            for (int j = 0; j < size; ++j) {
+                map.put(musicArrayList.get(j).getTitle(), musicArrayList.get(j));
+            }
+
+
+            size = favoriArrayList.size();
+            for (int j = 0; j < size; ++j) {
+                if (map.containsKey(favoriArrayList.get(j).getTitle())) {
+                    Music music = map.get(favoriArrayList.get(j).getTitle());
+                    favoriArrayList.get(j).setAlbum(music.getAlbum());
+                    favoriArrayList.get(j).setPath(music.getPath());
+                    favoriArrayList.get(j).setArtist(music.getArtist());
+                }
+            }
+        }
         return favoriArrayList;
     }
 
@@ -110,6 +166,8 @@ public class NavigationButtonActivity extends AppCompatActivity {
         audioArtist = new ArrayList<String>();
         audioTitle = new ArrayList<String>();
         musicArrayList = new ArrayList<Music>();
+
+        db = new MyDataBase(getApplicationContext());
 
         // par defaut
         setFragment(new HomeV1());

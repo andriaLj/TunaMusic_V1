@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -33,8 +34,10 @@ public class HomeV1 extends Fragment {
     ArrayList<Music> musicArrayList;
     NavigationButtonActivity activity;
     CustumAdapter adapter;
-    Boolean isAdded = false;
     int index;
+
+    MyDataBase db;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -44,10 +47,30 @@ public class HomeV1 extends Fragment {
         activity  = (NavigationButtonActivity) getActivity();
         listV = view.findViewById(R.id.listVArtist);
 
+        db = activity.getDb();
+
+
         runtimePermission();
 
 
         return view;
+    }
+
+
+    ArrayList<Music> readAllDataBase() {
+        Cursor cursor = db.getAllInfo();
+        ArrayList<Music> listMusic = new ArrayList<>();
+        int i = 0;
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                listMusic.add(new Music(cursor.getString(0), // titre
+                                        cursor.getString(1), // artiste
+                                        cursor.getString(2), // album
+                                        cursor.getString(3), // path
+                                        i++)); // index
+            }
+        }
+        return listMusic;
     }
 
     /*
@@ -158,7 +181,6 @@ public class HomeV1 extends Fragment {
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.favori) {
             activity.addMusicToFavoris(musicArrayList.get(index));
-            Toast.makeText(getContext(), "Ajoutée aux favoris", Toast.LENGTH_SHORT).show();
         }
 
         return super.onContextItemSelected(item);

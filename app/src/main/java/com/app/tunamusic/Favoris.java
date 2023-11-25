@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,7 @@ public class Favoris extends Fragment {
     int index;
     ListView listV;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,9 +43,14 @@ public class Favoris extends Fragment {
         activity  = (NavigationButtonActivity) getActivity();
         listV = view.findViewById(R.id.listV);
 
+//        activity.deleteAllMusicInFavoris();
+
+
         runtimePermission();
         return view;
     }
+
+
 
     /*
         Recuperation des permissions
