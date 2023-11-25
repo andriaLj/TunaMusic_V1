@@ -3,5 +3,5 @@
 
     <item
         android:id="@+id/favori"
-        android:title="Ajouter Favori" />
+        android:title="Ajouter aux Favoris" />
 </menu>

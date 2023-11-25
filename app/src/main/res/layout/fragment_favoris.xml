@@ -17,7 +17,7 @@
             android:orientation="vertical">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbarAlbum"
+                android:id="@+id/toolbarFavoris"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/bgApp"
@@ -27,6 +27,7 @@
                 android:theme="?attr/actionBarTheme"
                 android:transitionGroup="false"
                 android:transitionName="@string/appbar_scrolling_view_behavior"
+                app:navigationIcon="@drawable/corbeille"
                 app:title="Favoris"
                 app:titleCentered="true"
                 app:titleTextColor="#FFFFFF" />

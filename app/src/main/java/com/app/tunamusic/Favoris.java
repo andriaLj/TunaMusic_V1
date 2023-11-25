@@ -1,7 +1,9 @@
 package com.app.tunamusic;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -22,6 +24,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 
@@ -44,6 +48,38 @@ public class Favoris extends Fragment {
         listV = view.findViewById(R.id.listV);
 
 //        activity.deleteAllMusicInFavoris();
+
+
+        // alert dialog si appui sur la corbeille
+        MaterialToolbar materialToolbar = view.findViewById(R.id.toolbarFavoris);
+        materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder alerBuilder = new AlertDialog.Builder(getContext());
+
+                // titre
+                alerBuilder.setTitle("Alerte");
+                // dialog message
+                alerBuilder.setMessage("Voulez-vous supprimer tous les favoris ?")
+                                .setCancelable(false)
+                                        .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                activity.deleteAllMusicInFavoris();
+                                                afficheMusic();
+                                            }
+                                        }).setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                AlertDialog alertDialog = alerBuilder.create();
+                alertDialog.show();
+            }
+        });
+
+
 
 
         runtimePermission();
@@ -167,5 +203,13 @@ public class Favoris extends Fragment {
         }
 
         return super.onContextItemSelected(item);
+    }
+
+
+    // Appui sur la corbeille
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Toast.makeText(getContext(), "toto", Toast.LENGTH_SHORT).show();
+        return super.onOptionsItemSelected(item);
     }
 }
