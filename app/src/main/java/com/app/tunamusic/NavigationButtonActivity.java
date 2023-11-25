@@ -79,6 +79,7 @@ public class NavigationButtonActivity extends AppCompatActivity {
     }
 
     public void addMusicToFavoris(Music music) {
+        music.setMusicInFavoris(true);
         boolean res = db.insert(music);
         if (res) {
             Toast.makeText(getApplicationContext(), "Ajoutée aux favoris", Toast.LENGTH_SHORT).show();
@@ -97,7 +98,7 @@ public class NavigationButtonActivity extends AppCompatActivity {
                         "", // artiste
                         "", // album
                         "", // path
-                        i++)); // index
+                        i++, true)); // index
             }
 
             int size = musicArrayList.size();
@@ -114,6 +115,7 @@ public class NavigationButtonActivity extends AppCompatActivity {
                     favoriArrayList.get(j).setAlbum(music.getAlbum());
                     favoriArrayList.get(j).setPath(music.getPath());
                     favoriArrayList.get(j).setArtist(music.getArtist());
+                    favoriArrayList.get(j).setMusicInFavoris(true);
                 }
             }
         }
@@ -363,7 +365,7 @@ public class NavigationButtonActivity extends AppCompatActivity {
                             audioArtist.get(i),
                             audioAlbum.get(i),
                             path.get(i),
-                            i));
+                            i, false));
                     ++i;
 
                 } while (audioCursor.moveToNext());

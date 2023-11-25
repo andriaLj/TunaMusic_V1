@@ -1,5 +1,6 @@
 package com.app.tunamusic;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -16,6 +17,7 @@ public class Music implements Parcelable {
     private String path;
     private int index; // indice de la musique dansl la liste
     private String albumCover;
+    private boolean isInFavoris;
 
     // permet de caster l'objet Music (passage d'une activity a une autre avec putExtra
     protected Music(Parcel in) {
@@ -24,8 +26,9 @@ public class Music implements Parcelable {
         album = in.readString();
         path = in.readString();
         index = in.readInt();
-//        if (sendAlbumCover)
-//            albumCover = in.readString();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            isInFavoris = in.readBoolean();
+        }
     }
 
 
@@ -43,21 +46,22 @@ public class Music implements Parcelable {
     };
 
     // CONSTRUCTEUR
-    public Music(String audioTitle, String audioArtist, String audioAlbum, String path, int index) {
-        title = audioTitle;
-        artist = audioArtist;
-        album = audioAlbum;
-        this.path = path;
-        this.index = index;
-    }
+//    public Music(String audioTitle, String audioArtist, String audioAlbum, String path, int index) {
+//        title = audioTitle;
+//        artist = audioArtist;
+//        album = audioAlbum;
+//        this.path = path;
+//        this.index = index;
+//        isInFavoris = false;
+//    }
 
-    public Music(String audioTitle, String audioArtist, String audioAlbum, String path, int index, String albumCover) {
+    public Music(String audioTitle, String audioArtist, String audioAlbum, String path, int index, Boolean isInFavoris) {
         title = audioTitle;
         artist = audioArtist;
         album = audioAlbum;
         this.path = path;
         this.index = index;
-        this.albumCover = albumCover;
+        this.isInFavoris = isInFavoris;
     }
 
     // GETTERS
@@ -79,6 +83,9 @@ public class Music implements Parcelable {
 
     public int getIndex() {
         return index;
+    }
+    public boolean isMusicInFavoris() {
+        return isInFavoris;
     }
 
 
@@ -103,6 +110,8 @@ public class Music implements Parcelable {
         this.path = path;
     }
 
+    public void setMusicInFavoris(boolean isInFavoris) { this.isInFavoris = isInFavoris; }
+
 
     @Override
     public int describeContents() {
@@ -117,5 +126,8 @@ public class Music implements Parcelable {
         parcel.writeString(album);
         parcel.writeString(path);
         parcel.writeInt(index);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            parcel.writeBoolean(isInFavoris);
+        }
     }
 }

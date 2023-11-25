@@ -47,9 +47,6 @@ public class Favoris extends Fragment {
         activity  = (NavigationButtonActivity) getActivity();
         listV = view.findViewById(R.id.listV);
 
-//        activity.deleteAllMusicInFavoris();
-
-
         // alert dialog si appui sur la corbeille
         MaterialToolbar materialToolbar = view.findViewById(R.id.toolbarFavoris);
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -164,8 +161,7 @@ public class Favoris extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Music myMusic = new Music(musicArray.get(i).getTitle(), musicArray.get(i).getArtist(), musicArray.get(i).getAlbum(), musicArray.get(i).getPath(), i);
-
+                    Music myMusic = new Music(musicArray.get(i).getTitle(), musicArray.get(i).getArtist(), musicArray.get(i).getAlbum(), musicArray.get(i).getPath(), i, true);
                     Intent intent = new Intent(getContext(), LecteurActivity.class);
                     intent.putExtra("MUSIC", myMusic);
                     intent.putParcelableArrayListExtra("MUSIC_ARRAY", activity.getFavoriArrayList());

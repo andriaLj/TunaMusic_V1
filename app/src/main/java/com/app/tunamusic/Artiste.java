@@ -173,7 +173,7 @@ public class Artiste extends Fragment {
                 @Override
                 public void onClick(View view) {
                     ArrayList<Music> arr = getMusicArtist(musicArrayList);
-                    Music myMusic = new Music(arr.get(i).getTitle(), arr.get(i).getArtist(), arr.get(i).getAlbum(), arr.get(i).getPath(), i);
+                    Music myMusic = new Music(arr.get(i).getTitle(), arr.get(i).getArtist(), arr.get(i).getAlbum(), arr.get(i).getPath(), i, false);
                     Intent intent = new Intent(getContext(), LecteurActivity.class);
                     intent.putExtra("MUSIC", myMusic);
                     intent.putParcelableArrayListExtra("MUSIC_ARRAY", arr);

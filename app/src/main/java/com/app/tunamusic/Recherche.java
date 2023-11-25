@@ -83,7 +83,7 @@ public class Recherche extends Fragment {
                     isAlbum = listV.getItemAtPosition(i).toString().contains(musicArrayList.get(j).getAlbum());
 
                     if (isTitle && isArtist && isAlbum) {
-                        myMusic = new Music(audioTitle.get(j), audioArtist.get(j), audioAlbum.get(j), path.get(j), j);
+                        myMusic = new Music(audioTitle.get(j), audioArtist.get(j), audioAlbum.get(j), path.get(j), j, false);
 
                         Intent intent = new Intent(getContext(), LecteurActivity.class);
                         intent.putExtra("MUSIC", myMusic);
@@ -216,7 +216,7 @@ public class Recherche extends Fragment {
                             audioArtist.get(i),
                             audioAlbum.get(i),
                             path.get(i),
-                            i));
+                            i, false));
                     ++i;
 
                 } while(audioCursor.moveToNext());

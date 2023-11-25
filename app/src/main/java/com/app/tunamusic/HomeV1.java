@@ -67,7 +67,7 @@ public class HomeV1 extends Fragment {
                                         cursor.getString(1), // artiste
                                         cursor.getString(2), // album
                                         cursor.getString(3), // path
-                                        i++)); // index
+                                        i++, true)); // index
             }
         }
         return listMusic;
@@ -147,7 +147,7 @@ public class HomeV1 extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Music myMusic = new Music(musicArrayList.get(i).getTitle(), musicArrayList.get(i).getArtist(), musicArrayList.get(i).getAlbum(), musicArrayList.get(i).getPath(), i);
+                    Music myMusic = new Music(musicArrayList.get(i).getTitle(), musicArrayList.get(i).getArtist(), musicArrayList.get(i).getAlbum(), musicArrayList.get(i).getPath(), i, false);
 
                     Intent intent = new Intent(getContext(), LecteurActivity.class);
                     intent.putExtra("MUSIC", myMusic);
