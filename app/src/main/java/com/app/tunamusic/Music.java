@@ -6,7 +6,6 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
 
 public class Music implements Parcelable {
 
@@ -16,7 +15,6 @@ public class Music implements Parcelable {
     private String album;
     private String path;
     private int index; // indice de la musique dansl la liste
-    private String albumCover;
     private boolean isInFavoris;
 
     // permet de caster l'objet Music (passage d'une activity a une autre avec putExtra
@@ -46,15 +44,6 @@ public class Music implements Parcelable {
     };
 
     // CONSTRUCTEUR
-//    public Music(String audioTitle, String audioArtist, String audioAlbum, String path, int index) {
-//        title = audioTitle;
-//        artist = audioArtist;
-//        album = audioAlbum;
-//        this.path = path;
-//        this.index = index;
-//        isInFavoris = false;
-//    }
-
     public Music(String audioTitle, String audioArtist, String audioAlbum, String path, int index, Boolean isInFavoris) {
         title = audioTitle;
         artist = audioArtist;
