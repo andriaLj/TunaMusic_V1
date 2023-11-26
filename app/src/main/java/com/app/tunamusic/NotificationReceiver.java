@@ -12,7 +12,8 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     public void onCreate(){
         Toast.makeText(mservice, "coucou", Toast.LENGTH_SHORT).show();
-        /*final ServiceConnection connection = new ServiceConnection() {
+
+        final ServiceConnection connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName className, IBinder service) {
                 MyService.LocalBinder binder = (MyService.LocalBinder) service;
@@ -24,7 +25,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 mservice = null;
                 isBound = false;
             }
-        };*/
+        };
     }
 
     @Override

@@ -63,14 +63,14 @@ public class MyService extends Service {
 
     // lance la lecture de la musique
     public void playMusic() {
-        if (mediaPlayer != null && !mediaPlayer.isPlaying()){ mediaPlayer.start();
-        startForeground(1,buildNotification());}//Créer la notification de Foregroundservice ou la met à jour.
+        if (mediaPlayer != null && !mediaPlayer.isPlaying()){ mediaPlayer.start(); }
+//        startForeground(1,buildNotification());}//Créer la notification de Foregroundservice ou la met à jour.
     }
 
     // met la musique en pause
     public void pauseMusic() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()){ mediaPlayer.pause();
-        startForeground(1,buildNotification());} //Créer la notification de Foregroundservice ou la met à jour.
+        if (mediaPlayer != null && mediaPlayer.isPlaying()){ mediaPlayer.pause(); }
+//        startForeground(1,buildNotification());} //Créer la notification de Foregroundservice ou la met à jour.
     }
 
     public void setPath(String path) {
@@ -116,7 +116,7 @@ public class MyService extends Service {
         musicIndex = intent.getIntExtra("MUSIC_INDEX", -1);
         musicArrayList = intent.getParcelableArrayListExtra("LIST_MUSIC");
 
-        startForeground(1,buildNotification()); //Créer la notification de Foregroundservice ou la met à jour.
+//        startForeground(1,buildNotification()); //Créer la notification de Foregroundservice ou la met à jour.
 
 
         if (mediaPlayer != null) {
@@ -139,7 +139,7 @@ public class MyService extends Service {
     public void onDestroy() {
         super.onDestroy();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            stopForeground(Service.STOP_FOREGROUND_REMOVE);
+//            stopForeground(Service.STOP_FOREGROUND_REMOVE);
         }
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop(); // arrete la musique
@@ -158,7 +158,7 @@ public class MyService extends Service {
         Intent intentService = new Intent(this, receiver.getClass());
         PendingIntent pendingService = PendingIntent.getBroadcast(this,0,intentService,PendingIntent.FLAG_MUTABLE);
 
-        return  new NotificationCompat.Builder(this, "music_player")
+        return  new NotificationCompat.Builder(this, "channel1")
                 .setContentTitle(musicArrayList.get(musicIndex).getTitle())
                 .setContentText(musicArrayList.get(musicIndex).getArtist())
                 .setContentIntent(pendingIntent)

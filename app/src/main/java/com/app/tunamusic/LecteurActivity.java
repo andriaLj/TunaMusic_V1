@@ -30,6 +30,7 @@ public class LecteurActivity extends AppCompatActivity {
     ImageView btPlay;
     ImageView btNext;
     ImageView btPrevious;
+    ImageView addTofavoris;
     SeekBar seekBar; // bar glissante
     TextView infoMusic;
     TextView minSec;
@@ -41,6 +42,8 @@ public class LecteurActivity extends AppCompatActivity {
     BroadcastReceiver dataReceiver;
     Boolean isPlaying = true;
 
+    MyDataBase db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class LecteurActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lecteur);
 
 
+        db = new MyDataBase(getApplicationContext());
 
         seekBar = findViewById(R.id.seekBar);
 
@@ -170,6 +174,22 @@ public class LecteurActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
+
+        addTofavoris = findViewById(R.id.addToFavori);
+        addTofavoris.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!music.isMusicInFavoris()) {
+                    addMusicToFavoris(music);
+                    addTofavoris.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.coeur));
+                } else {
+                    removeMusicTOFavoris(music);
+                    addTofavoris.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.coeurvide));
+                }
+            }
+        });
+
+
         Handler handler = new Handler();
         // evolution du seekbar et du temps
         Timer timer = new Timer();
@@ -179,6 +199,14 @@ public class LecteurActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        if ( music != null) {
+                            if (music.isMusicInFavoris()) {
+                                addTofavoris.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.coeur));
+                            } else {
+                                addTofavoris.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.coeurvide));
+                            }
+                        }
+
                         if (isBound && mservice != null) {
                             seekBar.setMax(mservice.getMusicDuration());
                             seekBar.setProgress(mservice.getMusicCursor());
@@ -218,7 +246,7 @@ public class LecteurActivity extends AppCompatActivity {
                 });
             }
 
-        }, 2500, 1000);
+        }, 500, 1000); // mettre delay : 2500 si crash
 
     }
 
@@ -263,6 +291,22 @@ public class LecteurActivity extends AppCompatActivity {
                 btPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_play));
             }
         }
+    }
 
+
+    public void addMusicToFavoris(Music music) {
+        music.setMusicInFavoris(true);
+        boolean res = db.insert(music);
+        if (res) {
+            Toast.makeText(getApplicationContext(), "Ajoutée aux favoris", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Echec", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void removeMusicTOFavoris(Music music) {
+        if (music == null) return;
+        music.setMusicInFavoris(false);
+        db.deleteInfo(music);
     }
 }
