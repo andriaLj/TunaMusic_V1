@@ -6,7 +6,6 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -31,7 +30,6 @@ public class LecteurActivity extends AppCompatActivity {
     ImageView btPlay;
     ImageView btNext;
     ImageView btPrevious;
-    ImageView btCoeur;
     SeekBar seekBar; // bar glissante
     TextView infoMusic;
     TextView minSec;
@@ -43,15 +41,13 @@ public class LecteurActivity extends AppCompatActivity {
     BroadcastReceiver dataReceiver;
     Boolean isPlaying = true;
 
-    MyDataBase db;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecteur);
 
-        db = new MyDataBase(getApplicationContext());
+
 
         seekBar = findViewById(R.id.seekBar);
 
@@ -86,13 +82,11 @@ public class LecteurActivity extends AppCompatActivity {
                         if (music.getIndex() > 0) {
                             mservice.setPath(musicArrayList.get(music.getIndex() - 1).getPath());
                             music = musicArrayList.get(music.getIndex() - 1);
-                            mservice.setTitleArtist(music.getTitle() + " - " + music.getArtist());
-                            infoMusic.setText(mservice.getTitleArtist());
+                            infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                         } else {
                             mservice.setPath(musicArrayList.get(musicArrayList.size() - 1).getPath());
                             music = musicArrayList.get(musicArrayList.size() - 1);
-                            mservice.setTitleArtist(music.getTitle() + " - " + music.getArtist());
-                            infoMusic.setText(mservice.getTitleArtist());
+                            infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                         }
                     }
                     if (mservice.isPlayingMusic()) {
@@ -116,13 +110,13 @@ public class LecteurActivity extends AppCompatActivity {
                     if (music.getIndex() >= musicArrayList.size() - 1) {
                         mservice.setPath(musicArrayList.get(0).getPath());
                         music = musicArrayList.get(0);
-                        mservice.setTitleArtist(music.getTitle() + " - " + music.getArtist());
-                        infoMusic.setText(mservice.getTitleArtist());
+                        infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                     } else {
+//                        mservice.setPath(musicArrayList.get(music.getIndex() + 1).getPath());
                         mservice.setPath(mservice.getNextPathMusic());
                         music = mservice.getMusic();
-                        mservice.setTitleArtist(music.getTitle() + " - " + music.getArtist());
-                        infoMusic.setText(mservice.getTitleArtist());
+//                        music = musicArrayList.get(music.getIndex() + 1);
+                        infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                     }
                     if (mservice.isPlayingMusic()) {
                         isPlaying = true;
@@ -130,21 +124,6 @@ public class LecteurActivity extends AppCompatActivity {
                     } else
                         btPlay.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_play));
                 }
-            }
-        });
-
-        btCoeur = findViewById(R.id.addToFavori);
-        btCoeur.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!music.isMusicInFavoris()) {
-                    addMusicToFavoris(music);
-                    btCoeur.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.coeur));
-                } else {
-                    removeMusicTOFavoris(music);
-                    btCoeur.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.coeurvide));
-                }
-
             }
         });
 
@@ -191,13 +170,6 @@ public class LecteurActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        if (music.isMusicInFavoris()) {
-            btCoeur.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.coeur));
-        } else {
-            btCoeur.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.coeurvide));
-        }
-
-
         Handler handler = new Handler();
         // evolution du seekbar et du temps
         Timer timer = new Timer();
@@ -207,24 +179,20 @@ public class LecteurActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-
                         if (isBound && mservice != null) {
                             seekBar.setMax(mservice.getMusicDuration());
                             seekBar.setProgress(mservice.getMusicCursor());
-                            infoMusic.setText(mservice.getTitleArtist());
                             // passage a la musique suivante si on arrive a la fin
                             if (mservice.getMusicCursor() + 500 >= mservice.getMusicDuration()) {
                                 // identique au bouton next
                                 if (music.getIndex() == musicArrayList.size() - 1) {
                                     mservice.setPath(musicArrayList.get(0).getPath());
                                     music = musicArrayList.get(0);
-                                    mservice.setTitleArtist(music.getTitle() + " - " + music.getArtist());
-                                    infoMusic.setText(mservice.getTitleArtist());
+                                    infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                                 } else {
-                                    mservice.setPath(mservice.getNextPathMusic());
-                                    music = mservice.getMusic();
-                                    mservice.setTitleArtist(music.getTitle() + " - " + music.getArtist());
-                                    infoMusic.setText(mservice.getTitleArtist());
+                                    mservice.setPath(musicArrayList.get(music.getIndex() + 1).getPath());
+                                    music = musicArrayList.get(music.getIndex() + 1);
+                                    infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                                 }
                             }
                             // ecoute changement d'etat de la bar de progression
@@ -296,20 +264,5 @@ public class LecteurActivity extends AppCompatActivity {
             }
         }
 
-    }
-
-    public void addMusicToFavoris(Music music) {
-        music.setMusicInFavoris(true);
-        boolean res = db.insert(music);
-        if (res) {
-            Toast.makeText(getApplicationContext(), "Ajoutée aux favoris", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getApplicationContext(), "Echec", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void removeMusicTOFavoris(Music music) {
-        if (musicArrayList == null) return;
-        db.deleteInfo(music);
     }
 }

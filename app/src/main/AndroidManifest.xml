@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIAPLAYBACK"/>
 
     <application
         android:name=".App"
@@ -39,6 +41,7 @@
         <service
             android:name=".MyService"
             android:enabled="true"
+            android:foregroundServiceType="mediaPlayback"
             android:launchMode="singleTask" />
 
         <activity
