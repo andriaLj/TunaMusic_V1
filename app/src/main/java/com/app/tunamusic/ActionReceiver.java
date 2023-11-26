@@ -12,13 +12,19 @@ import android.widget.Toast;
 
 public class ActionReceiver extends BroadcastReceiver {
 
+    MyService myService = MyService.getInstance();
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction() != null) {
             if (intent.getAction().equals("ACTION_PLAY")) {
-                MyService.getInstance().playMusic();
+                myService.playMusic();
             } else if (intent.getAction().equals("ACTION_PAUSE")) {
-                MyService.getInstance().pauseMusic();
+                myService.pauseMusic();
+            } else if (intent.getAction().equals("ACTION_NEXT")) {
+               myService.setPath(myService.getNextPathMusic());
+            } else if (intent.getAction().equals("ACTION_PREV")) {
+                myService.setPath(myService.getPreviousPathMusic());
             }
         }
     }

@@ -167,7 +167,6 @@ public class MyService extends Service {
 
 
     // ------------------------------------ NOTIFICATION -------------------------------------------
-    //------------------------------------- NOTIFICATION ----------------------------------------
     private static final String CHANNEL_ID = "my_channel";
     private static final int NOTIFICATION_ID = 1;
     private static int notificationRequestCode = 0;
@@ -204,7 +203,7 @@ public class MyService extends Service {
 
         Intent actionIntentPlay = new Intent(this, ActionReceiver.class);
         actionIntentPlay.setAction("ACTION_PLAY");
-        PendingIntent actionPendingIntent = PendingIntent.getBroadcast(
+        PendingIntent actionPendingIntentPlay = PendingIntent.getBroadcast(
                 this,
                 0,
                 actionIntentPlay,
@@ -220,6 +219,25 @@ public class MyService extends Service {
                 PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
         );
 
+        Intent actionIntentNext = new Intent(this, ActionReceiver.class);
+        actionIntentNext.setAction("ACTION_NEXT");
+        PendingIntent actionPendingIntentNext = PendingIntent.getBroadcast(
+                this,
+                0,
+                actionIntentNext,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        Intent actionIntentPrevious = new Intent(this, ActionReceiver.class);
+        actionIntentPrevious.setAction("ACTION_PREV");
+        PendingIntent actionPendingIntentPrevious = PendingIntent.getBroadcast(
+                this,
+                0,
+                actionIntentPrevious,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+
         if (pendingIntent != null) {
             String title = "Title";
             String artist = "Artist";
@@ -233,8 +251,12 @@ public class MyService extends Service {
                     .setContentText(artist)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentIntent(pendingIntent)
-                    .addAction(R.drawable.ic_play, "Play", actionPendingIntent)
+                    .addAction(R.drawable.ic_action_previous, "Previous", actionPendingIntentPrevious)
                     .addAction(R.drawable.ic_action_pause, "Pause", actionPendingIntentPause)
+                    .addAction(R.drawable.ic_action_play, "Play", actionPendingIntentPlay)
+                    .addAction(R.drawable.ic_action_next, "Next", actionPendingIntentNext)
+                    .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                            .setShowActionsInCompactView(0, 1, 2))
                     .setVibrate(new long[]{0})  // Empty array disables vibration
                     .setAutoCancel(true);
 

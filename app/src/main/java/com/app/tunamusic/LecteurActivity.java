@@ -59,9 +59,6 @@ public class LecteurActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecteur);
 
-
-//        createNotificationChannel();
-
         db = new MyDataBase(getApplicationContext());
 
         seekBar = findViewById(R.id.seekBar);
@@ -230,8 +227,10 @@ public class LecteurActivity extends AppCompatActivity {
                                     music = musicArrayList.get(0);
                                     infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                                 } else {
-                                    mservice.setPath(musicArrayList.get(music.getIndex() + 1).getPath());
-                                    music = musicArrayList.get(music.getIndex() + 1);
+//                                    mservice.setPath(musicArrayList.get(music.getIndex() + 1).getPath());
+                                    mservice.setPath(mservice.getNextPathMusic());
+//                                    music = musicArrayList.get(music.getIndex() + 1);
+                                    music = mservice.getMusic();
                                     infoMusic.setText(music.getTitle() + " - " + music.getArtist());
                                 }
                             }
@@ -258,7 +257,7 @@ public class LecteurActivity extends AppCompatActivity {
                 });
             }
 
-        }, 500, 1000); // mettre delay : 2500 si crash
+        }, 1500, 1000); // mettre delay : 2500 si crash
 
     }
 

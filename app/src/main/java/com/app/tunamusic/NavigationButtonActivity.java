@@ -264,10 +264,11 @@ public class NavigationButtonActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 if (mservice.getMusicCursor() + 500 >= mservice.getMusicDuration()) {
-                                    mservice.setPath(mservice.getNextPathMusic());
+//                                    mservice.setPath(mservice.getNextPathMusic());
                                     music = mservice.getMusic();
                                     mservice.setTitleArtist(music.getTitle() + " - " + music.getArtist());
                                     lecteurTitle.setText(mservice.getTitleArtist());
+                                    mservice.setPath(mservice.getNextPathMusic());
                                 }
                                 seekBarLecteur.setMax(mservice.getMusicDuration());
                                 seekBarLecteur.setProgress(mservice.getMusicCursor());
