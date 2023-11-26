@@ -274,6 +274,7 @@ public class NavigationButtonActivity extends AppCompatActivity {
                                 music = mservice.getMusic();
                                 mservice.setTitleArtist(music.getTitle() + " - " + music.getArtist());
                                 lecteurTitle.setText(mservice.getTitleArtist());
+//                                mservice.showNotification(mservice.getMusic());
                                 if (mservice.isPlayingMusic()) {
                                     btControl.setImageDrawable(getDrawable(android.R.drawable.ic_media_pause));
                                 } else {

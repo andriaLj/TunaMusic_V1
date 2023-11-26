@@ -1,9 +1,15 @@
 package com.app.tunamusic;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -12,7 +18,10 @@ import android.os.Build;
 import android.os.IBinder;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -22,6 +31,13 @@ public class MyService extends Service {
     String titleArtist; // contient le titre et le l'artiste de l'audio
     int musicIndex;
     ArrayList<Music> musicArrayList;
+
+    private static MyService instance;
+
+    public static MyService getInstance() {
+        return instance;
+    }
+
 
     private final IBinder binder = new LocalBinder(); // relie la liaison avec une activity
 
@@ -107,6 +123,8 @@ public class MyService extends Service {
     public void onCreate() {
         super.onCreate();
         mediaPlayer = new MediaPlayer();
+        createNotificationChannel();
+        instance = this;
     }
 
     @Override
@@ -146,30 +164,90 @@ public class MyService extends Service {
             mediaPlayer.release(); // tue l'instance de l'objet
         }
     }
-    public Notification buildNotification() {
-        Bitmap artwork = BitmapFactory.decodeResource(getResources(), R.drawable.album);
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,notificationIntent,PendingIntent.FLAG_IMMUTABLE);
 
-        NotificationReceiver receiver = new NotificationReceiver();
-        receiver.onCreate();
+    // ------------------------------------ NOTIFICATION -------------------------------------------
+    //------------------------------------- NOTIFICATION ----------------------------------------
+    private static final String CHANNEL_ID = "my_channel";
+    private static final int NOTIFICATION_ID = 1;
+    private static int notificationRequestCode = 0;
 
-        Intent intentService = new Intent(this, receiver.getClass());
-        PendingIntent pendingService = PendingIntent.getBroadcast(this,0,intentService,PendingIntent.FLAG_MUTABLE);
 
-        return  new NotificationCompat.Builder(this, "channel1")
-                .setContentTitle(musicArrayList.get(musicIndex).getTitle())
-                .setContentText(musicArrayList.get(musicIndex).getArtist())
-                .setContentIntent(pendingIntent)
-                .setLargeIcon(artwork)
-                .setSmallIcon(R.drawable.logo__2_)
-                .addAction(R.drawable.ic_action_previous,"Previous",pendingService)
-                .addAction(R.drawable.ic_action_play, "Play", pendingService)
-                .addAction(R.drawable.ic_action_next, "Next", pendingService)
-                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(0, 1, 2))
-                .build();
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "My Channel";
+            String description = "Channel for my notifications";
+            int importance = NotificationManager.IMPORTANCE_LOW;
+//            int importance = Notification.FOREGROUND_SERVICE_IMMEDIATE;
 
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    // appel quand une musique en cours de lecture
+    public void showNotification(Music music) {
+        Intent intent = new Intent(this, MyService.class); // Replace YourTargetActivity with the desired activity
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this,
+                notificationRequestCode++,
+                intent,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+
+
+        Intent actionIntentPlay = new Intent(this, ActionReceiver.class);
+        actionIntentPlay.setAction("ACTION_PLAY");
+        PendingIntent actionPendingIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                actionIntentPlay,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        Intent actionIntentPause = new Intent(this, ActionReceiver.class);
+        actionIntentPause.setAction("ACTION_PAUSE");
+        PendingIntent actionPendingIntentPause = PendingIntent.getBroadcast(
+                this,
+                0,
+                actionIntentPause,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        if (pendingIntent != null) {
+            String title = "Title";
+            String artist = "Artist";
+            if (music != null) {
+                title = music.getTitle();
+                artist = music.getArtist();
+            }
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(title)
+                    .setContentText(artist)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent)
+                    .addAction(R.drawable.ic_play, "Play", actionPendingIntent)
+                    .addAction(R.drawable.ic_action_pause, "Pause", actionPendingIntentPause)
+                    .setVibrate(new long[]{0})  // Empty array disables vibration
+                    .setAutoCancel(true);
+
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                return;
+            }
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
+        } else {
+            Toast.makeText(this, "utu", Toast.LENGTH_SHORT).show();
+        }
     }
 }

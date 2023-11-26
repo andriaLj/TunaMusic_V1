@@ -2,15 +2,23 @@ package com.app.tunamusic;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -45,11 +53,14 @@ public class LecteurActivity extends AppCompatActivity {
     MyDataBase db;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecteur);
 
+
+//        createNotificationChannel();
 
         db = new MyDataBase(getApplicationContext());
 
@@ -200,6 +211,7 @@ public class LecteurActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if ( music != null) {
+                            mservice.showNotification(mservice.getMusic());
                             if (music.isMusicInFavoris()) {
                                 addTofavoris.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.coeur));
                             } else {
@@ -309,4 +321,88 @@ public class LecteurActivity extends AppCompatActivity {
         music.setMusicInFavoris(false);
         db.deleteInfo(music);
     }
+
+
+    //------------------------------------- NOTIFICATION ----------------------------------------
+//    private static final String CHANNEL_ID = "my_channel";
+//    private static final int NOTIFICATION_ID = 1;
+//    private static int notificationRequestCode = 0;
+//
+//
+//    private void createNotificationChannel() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            CharSequence name = "My Channel";
+//            String description = "Channel for my notifications";
+//            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+//
+//            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+//            channel.setDescription(description);
+//
+//            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+//            notificationManager.createNotificationChannel(channel);
+//        }
+//    }
+
+    // appel quand une musique en cours de lecture
+//    private void showNotification(Music music) {
+//        Intent intent = new Intent(this, LecteurActivity.class); // Replace YourTargetActivity with the desired activity
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//
+//        PendingIntent pendingIntent = PendingIntent.getActivity(
+//                this,
+//                notificationRequestCode++,
+//                intent,
+//                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+//        );
+//
+//
+//
+//
+//        Intent actionIntentPlay = new Intent(this, ActionReceiver.class);
+//        actionIntentPlay.setAction("ACTION_PLAY");
+//        PendingIntent actionPendingIntent = PendingIntent.getBroadcast(
+//                this,
+//                0,
+//                actionIntentPlay,
+//                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+//        );
+//
+//        Intent actionIntentPause = new Intent(this, ActionReceiver.class);
+//        actionIntentPause.setAction("ACTION_PAUSE");
+//        PendingIntent actionPendingIntentPause = PendingIntent.getBroadcast(
+//                this,
+//                0,
+//                actionIntentPause,
+//                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+//        );
+//
+//        if (pendingIntent != null) {
+//            String title = "Title";
+//            String artist = "Artist";
+//            if (music != null) {
+//                title = music.getTitle();
+//                artist = music.getArtist();
+//            }
+//            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+//                    .setSmallIcon(R.mipmap.ic_launcher)
+//                    .setContentTitle(title)
+//                    .setContentText(artist)
+//                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//                    .setContentIntent(pendingIntent)
+//                    .addAction(R.drawable.ic_play, "Play", actionPendingIntent)
+//                    .addAction(R.drawable.ic_action_pause, "Pause", actionPendingIntentPause)
+//                    .setAutoCancel(true);
+//
+//
+//            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+//            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+//                // TODO: Consider calling
+//                //    ActivityCompat#requestPermissions
+//                return;
+//            }
+//            notificationManager.notify(NOTIFICATION_ID, builder.build());
+//        } else {
+//            Toast.makeText(this, "utu", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 }

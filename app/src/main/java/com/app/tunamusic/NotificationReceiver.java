@@ -11,7 +11,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     private boolean isBound = false;
 
     public void onCreate(){
-        Toast.makeText(mservice, "coucou", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(mservice, "coucou", Toast.LENGTH_SHORT).show();
 
         final ServiceConnection connection = new ServiceConnection() {
             @Override
