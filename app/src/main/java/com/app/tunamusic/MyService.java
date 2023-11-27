@@ -201,24 +201,6 @@ public class MyService extends Service {
 
 
 
-        Intent actionIntentPlay = new Intent(this, ActionReceiver.class);
-        actionIntentPlay.setAction("ACTION_PLAY");
-        PendingIntent actionPendingIntentPlay = PendingIntent.getBroadcast(
-                this,
-                0,
-                actionIntentPlay,
-                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
-        );
-
-        Intent actionIntentPause = new Intent(this, ActionReceiver.class);
-        actionIntentPause.setAction("ACTION_PAUSE");
-        PendingIntent actionPendingIntentPause = PendingIntent.getBroadcast(
-                this,
-                0,
-                actionIntentPause,
-                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
-        );
-
         Intent actionIntentNext = new Intent(this, ActionReceiver.class);
         actionIntentNext.setAction("ACTION_NEXT");
         PendingIntent actionPendingIntentNext = PendingIntent.getBroadcast(
@@ -245,20 +227,56 @@ public class MyService extends Service {
                 title = music.getTitle();
                 artist = music.getArtist();
             }
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(title)
-                    .setContentText(artist)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setContentIntent(pendingIntent)
-                    .addAction(R.drawable.ic_action_previous, "Previous", actionPendingIntentPrevious)
-                    .addAction(R.drawable.ic_action_pause, "Pause", actionPendingIntentPause)
-                    .addAction(R.drawable.ic_action_play, "Play", actionPendingIntentPlay)
-                    .addAction(R.drawable.ic_action_next, "Next", actionPendingIntentNext)
-                    .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                            .setShowActionsInCompactView(0, 1, 2))
-                    .setVibrate(new long[]{0})  // Empty array disables vibration
-                    .setAutoCancel(true);
+            NotificationCompat.Builder builder;
+            if(isPlayingMusic()){
+                Intent actionIntentPause = new Intent(this, ActionReceiver.class);
+                actionIntentPause.setAction("ACTION_PAUSE");
+                PendingIntent actionPendingIntentPause = PendingIntent.getBroadcast(
+                        this,
+                        0,
+                        actionIntentPause,
+                        PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+                );
+                builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher))
+                        .setContentTitle(title)
+                        .setContentText(artist)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setContentIntent(pendingIntent)
+                        .addAction(R.drawable.ic_action_previous, "Previous", actionPendingIntentPrevious)
+                        .addAction(R.drawable.ic_action_pause, "Pause", actionPendingIntentPause)
+                        .addAction(R.drawable.ic_action_next, "Next", actionPendingIntentNext)
+                        .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                                .setShowActionsInCompactView(0, 1, 2))
+                        .setVibrate(new long[]{0})  // Empty array disables vibration
+                        .setAutoCancel(true);
+            }else{
+                Intent actionIntentPlay = new Intent(this, ActionReceiver.class);
+                actionIntentPlay.setAction("ACTION_PLAY");
+                PendingIntent actionPendingIntentPlay = PendingIntent.getBroadcast(
+                        this,
+                        0,
+                        actionIntentPlay,
+                        PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+                );
+                
+                builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher))
+                        .setContentTitle(title)
+                        .setContentText(artist)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setContentIntent(pendingIntent)
+                        .addAction(R.drawable.ic_action_previous, "Previous", actionPendingIntentPrevious)
+                        .addAction(R.drawable.ic_action_play, "Play", actionPendingIntentPlay)
+                        .addAction(R.drawable.ic_action_next, "Next", actionPendingIntentNext)
+                        .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                                .setShowActionsInCompactView(0, 1, 2))
+                        .setVibrate(new long[]{0})  // Empty array disables vibration
+                        .setAutoCancel(true);
+            }
+
 
 
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
@@ -269,7 +287,6 @@ public class MyService extends Service {
             }
             notificationManager.notify(NOTIFICATION_ID, builder.build());
         } else {
-            Toast.makeText(this, "utu", Toast.LENGTH_SHORT).show();
         }
     }
 }
